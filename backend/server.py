@@ -1,9 +1,11 @@
 from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import requests as http_requests
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
@@ -18,6 +20,21 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Object Storage
+STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
+EMERGENT_KEY = os.environ.get('EMERGENT_LLM_KEY')
+_storage_key = None
+_og_image_cache = None
+
+def get_storage_key():
+    global _storage_key
+    if _storage_key:
+        return _storage_key
+    resp = http_requests.post(f"{STORAGE_URL}/init", json={"emergent_key": EMERGENT_KEY}, timeout=30)
+    resp.raise_for_status()
+    _storage_key = resp.json()["storage_key"]
+    return _storage_key
 
 # Create the main app
 app = FastAPI()
@@ -141,6 +158,35 @@ async def root():
 @api_router.get("/property", response_model=PropertyInfo)
 async def get_property_info():
     return PropertyInfo()
+
+@api_router.get("/og-image.png")
+@api_router.head("/og-image.png")
+async def serve_og_image():
+    """Serve OG image from object storage - public, no auth, cached aggressively"""
+    global _og_image_cache
+    if _og_image_cache:
+        return Response(
+            content=_og_image_cache, 
+            media_type="image/png",
+            headers={"Cache-Control": "public, max-age=86400, immutable"}
+        )
+    try:
+        key = get_storage_key()
+        resp = http_requests.get(
+            f"{STORAGE_URL}/objects/jacana-home/og-preview.png",
+            headers={"X-Storage-Key": key},
+            timeout=30
+        )
+        resp.raise_for_status()
+        _og_image_cache = resp.content
+        return Response(
+            content=_og_image_cache,
+            media_type="image/png",
+            headers={"Cache-Control": "public, max-age=86400, immutable"}
+        )
+    except Exception as e:
+        logger.error(f"OG image fetch error: {e}")
+        raise HTTPException(status_code=404, detail="OG image not found")
 
 @api_router.post("/chat", response_model=ChatResponse)
 async def chat_with_ai(request: ChatRequest):
