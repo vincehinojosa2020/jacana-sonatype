@@ -502,29 +502,43 @@ const LanguageProvider = ({ children }) => {
     <LanguageContext.Provider value={{ language, setLanguage }}>
       {/* Top Language Flag Bar - Super Visible */}
       <div data-testid="language-bar" className="fixed top-0 left-0 right-0 z-[60] bg-[#0A0A0A] border-b-2 border-[#D4AF37]/40" style={{ direction: 'ltr' }}>
-        <div className="flex items-center justify-center gap-3 sm:gap-5 py-3 sm:py-4 px-4">
+        <div className="flex items-center justify-center gap-2 sm:gap-4 py-2.5 sm:py-3 px-4">
+          <div className="flex items-center gap-1.5 mr-2 sm:mr-4">
+            <Globe size={16} className="text-[#D4AF37]" />
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.15em] text-[#D4AF37] font-semibold hidden sm:inline">Translate</span>
+          </div>
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
               data-testid={`lang-flag-${lang.code}`}
               onClick={() => setLanguage(lang)}
-              className={`text-3xl sm:text-4xl transition-all duration-300 hover:scale-130 cursor-pointer relative ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-300 hover:scale-110 cursor-pointer group ${
                 language.code === lang.code 
-                  ? 'scale-125 sm:scale-130 opacity-100 flag-active' 
+                  ? 'scale-105 opacity-100' 
                   : 'opacity-60 hover:opacity-100'
               }`}
               title={lang.name}
-              style={{ filter: language.code === lang.code ? 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.6))' : undefined }}
             >
-              {lang.flag}
+              <span className={`text-2xl sm:text-3xl ${language.code === lang.code ? 'flag-active' : ''}`}
+                style={language.code === lang.code ? { filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.6))' } : undefined}
+              >
+                {lang.flag}
+              </span>
+              <span className={`text-[8px] sm:text-[10px] uppercase tracking-wider transition-colors ${
+                language.code === lang.code 
+                  ? 'text-[#D4AF37] font-bold' 
+                  : 'text-white/40 group-hover:text-white/70'
+              }`}>
+                {lang.code === 'en' ? 'EN' : lang.code === 'es' ? 'ES' : lang.code === 'zh' ? '中文' : lang.code === 'vi' ? 'VI' : lang.code === 'fr' ? 'FR' : 'عر'}
+              </span>
               {language.code === lang.code && (
-                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-[#D4AF37] rounded-full"></span>
+                <span className="w-5 h-0.5 bg-[#D4AF37] rounded-full"></span>
               )}
             </button>
           ))}
         </div>
       </div>
-      <div style={{ paddingTop: '64px' }} dir={language.code === 'ar' ? 'rtl' : 'ltr'}>
+      <div style={{ paddingTop: '68px' }} dir={language.code === 'ar' ? 'rtl' : 'ltr'}>
         {children}
       </div>
     </LanguageContext.Provider>
