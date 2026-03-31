@@ -1,34 +1,146 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Main App Styles */
+
+/* Hero section background overlay */
+.hero-overlay {
+    background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+/* Bento grid for gallery */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 250px);
+    gap: 4px;
+}
+
+.bento-grid .bento-item:nth-child(1) {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.bento-grid .bento-item:nth-child(2) {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.bento-grid .bento-item:nth-child(3) {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.bento-grid .bento-item:nth-child(4) {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+@media (max-width: 768px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    
+    .bento-grid .bento-item {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+        height: 250px;
     }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+/* Chat bubble animation */
+@keyframes slideUp {
     from {
-        transform: rotate(0deg);
+        opacity: 0;
+        transform: translateY(20px);
     }
     to {
-        transform: rotate(360deg);
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-message {
+    animation: slideUp 0.3s ease-out;
+}
+
+/* LinkedIn button shine effect */
+.linkedin-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.linkedin-btn:hover::before {
+    left: 100%;
+}
+
+/* Feature card hover */
+.feature-card {
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(165, 28, 48, 0.15);
+}
+
+/* Stat number animation */
+.stat-number {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Drone section pulsing text */
+@keyframes pulse-text {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.pulse-text {
+    animation: pulse-text 2s ease-in-out infinite;
+}
+
+/* Chatbot trigger pulse */
+@keyframes chatbot-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(165, 28, 48, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(165, 28, 48, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(165, 28, 48, 0);
+    }
+}
+
+.chatbot-trigger {
+    animation: chatbot-pulse 2s infinite;
+}
+
+/* Smooth section transitions */
+section {
+    transition: background-color 0.3s ease;
+}
+
+/* Image loading placeholder */
+.img-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
     }
 }
