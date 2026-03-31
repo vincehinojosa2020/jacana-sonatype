@@ -28,11 +28,27 @@ import {
   DollarSign,
   Calculator,
   ExternalLink,
-  Music
+  Music,
+  Mic,
+  MicOff,
+  Globe,
+  Image,
+  Megaphone,
+  Flag
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+
+// Language options with flags (using emoji flags for simplicity and beauty)
+const LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇺🇸', greeting: "Hey! Ask me anything about 5214 Jacana Lane." },
+  { code: 'es', name: 'Español', flag: '🇪🇸', greeting: "¡Hola! Pregúntame lo que quieras sobre 5214 Jacana Lane." },
+  { code: 'zh', name: '中文', flag: '🇨🇳', greeting: "你好！有关5214 Jacana Lane的任何问题都可以问我。" },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', greeting: "Xin chào! Hãy hỏi tôi bất cứ điều gì về 5214 Jacana Lane." },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', greeting: "Bonjour! Posez-moi vos questions sur 5214 Jacana Lane." },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', greeting: "مرحباً! اسألني أي شيء عن 5214 Jacana Lane." }
+];
 
 // Actual property images from uploaded assets + hero image we're keeping
 const PROPERTY_IMAGES = [
@@ -292,19 +308,23 @@ const MortgageCalculator = () => {
   );
 };
 
-// Chatbot Component
+// Chatbot Component with Language Selection and Voice Input
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedLang, setSelectedLang] = useState(LANGUAGES[0]);
+  const [showLangPicker, setShowLangPicker] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hey! Ask me anything about 5214 Jacana Lane. Price, features, neighborhood—I've got answers."
+      content: LANGUAGES[0].greeting
     }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -313,6 +333,51 @@ const Chatbot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setIsListening(false);
+      };
+      
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+      };
+      
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
+
+  const toggleListening = () => {
+    if (!recognitionRef.current) return;
+    
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      // Set language for recognition
+      const langMap = { en: 'en-US', es: 'es-ES', zh: 'zh-CN', vi: 'vi-VN', fr: 'fr-FR', ar: 'ar-SA' };
+      recognitionRef.current.lang = langMap[selectedLang.code] || 'en-US';
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  };
+
+  const changeLanguage = (lang) => {
+    setSelectedLang(lang);
+    setShowLangPicker(false);
+    setMessages([{ role: "assistant", content: lang.greeting }]);
+  };
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -325,14 +390,23 @@ const Chatbot = () => {
     try {
       const response = await axios.post(`${API}/chat`, {
         session_id: sessionId,
-        message: userMessage
+        message: userMessage,
+        language: selectedLang.code
       });
       setMessages(prev => [...prev, { role: "assistant", content: response.data.response }]);
     } catch (error) {
       console.error("Chat error:", error);
+      const errorMsgs = {
+        en: "Having trouble connecting. Call George directly at 408-603-6603 — he picks up.",
+        es: "Problemas de conexión. Llama a George directamente: 408-603-6603",
+        zh: "连接问题。请直接致电 George：408-603-6603",
+        vi: "Gặp sự cố kết nối. Gọi trực tiếp cho George: 408-603-6603",
+        fr: "Problème de connexion. Appelez George: 408-603-6603",
+        ar: "مشكلة في الاتصال. اتصل بجورج مباشرة: 408-603-6603"
+      };
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "Having trouble connecting. Call George directly at 408-603-6603 — he picks up."
+        content: errorMsgs[selectedLang.code] || errorMsgs.en
       }]);
     } finally {
       setIsLoading(false);
@@ -363,24 +437,56 @@ const Chatbot = () => {
         <div 
           data-testid="chatbot-window"
           className="fixed bottom-8 right-8 w-80 md:w-96 backdrop-blur-2xl bg-white/95 border border-[#A51C30]/20 shadow-2xl flex flex-col overflow-hidden z-50"
-          style={{ height: '500px', borderRadius: '0' }}
+          style={{ height: '550px', borderRadius: '0' }}
         >
-          {/* Header */}
-          <div className="bg-[#A51C30] text-white p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Home size={20} />
-              <div>
-                <h3 className="font-heading text-lg font-semibold">Ask Anything</h3>
-                <p className="text-xs opacity-80">5214 Jacana Lane</p>
+          {/* Header with Language Selector */}
+          <div className="bg-[#A51C30] text-white p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <Home size={20} />
+                <div>
+                  <h3 className="font-heading text-lg font-semibold">Ask Anything</h3>
+                  <p className="text-xs opacity-80">5214 Jacana Lane</p>
+                </div>
               </div>
+              <button 
+                data-testid="chatbot-close"
+                onClick={() => setIsOpen(false)}
+                className="hover:bg-white/20 p-1 transition-colors"
+              >
+                <X size={20} />
+              </button>
             </div>
-            <button 
-              data-testid="chatbot-close"
-              onClick={() => setIsOpen(false)}
-              className="hover:bg-white/20 p-1 transition-colors"
-            >
-              <X size={20} />
-            </button>
+            
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                data-testid="lang-selector"
+                onClick={() => setShowLangPicker(!showLangPicker)}
+                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-3 py-1.5 transition-colors w-full justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <span className="text-xl">{selectedLang.flag}</span>
+                  <span className="text-sm">{selectedLang.name}</span>
+                </span>
+                <Globe size={16} />
+              </button>
+              
+              {showLangPicker && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white shadow-xl border border-gray-200 z-10">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => changeLanguage(lang)}
+                      className={`flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors ${selectedLang.code === lang.code ? 'bg-[#A51C30]/10' : ''}`}
+                    >
+                      <span className="text-2xl">{lang.flag}</span>
+                      <span className="text-sm text-gray-800 font-medium">{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Messages */}
@@ -399,7 +505,7 @@ const Chatbot = () => {
                     }`}
                     style={{ borderRadius: '0' }}
                   >
-                    <p className="text-sm font-body">{msg.content}</p>
+                    <p className="text-sm font-body" style={{ direction: selectedLang.code === 'ar' ? 'rtl' : 'ltr' }}>{msg.content}</p>
                   </div>
                 </div>
               ))}
@@ -418,17 +524,26 @@ const Chatbot = () => {
             </div>
           </ScrollArea>
 
-          {/* Input */}
+          {/* Input with Microphone */}
           <div className="p-4 border-t border-gray-200">
             <div className="flex gap-2">
+              <button
+                data-testid="mic-btn"
+                onClick={toggleListening}
+                className={`p-2 transition-colors ${isListening ? 'bg-[#A51C30] text-white animate-pulse' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                style={{ borderRadius: '0' }}
+                title={isListening ? "Stop listening" : "Speak your question"}
+              >
+                {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+              </button>
               <Input
                 data-testid="chatbot-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask about the property..."
+                placeholder={selectedLang.code === 'ar' ? "...اسأل عن العقار" : "Ask about the property..."}
                 className="flex-1 border-[#A51C30]/30 focus:border-[#A51C30] focus:ring-[#A51C30]"
-                style={{ borderRadius: '0' }}
+                style={{ borderRadius: '0', direction: selectedLang.code === 'ar' ? 'rtl' : 'ltr' }}
               />
               <Button
                 data-testid="chatbot-send"
@@ -794,6 +909,201 @@ const AgentSection = () => {
   );
 };
 
+// Marketing Materials Section - Actual Billboard & Sign Mockups
+const MarketingSection = () => {
+  return (
+    <section data-testid="marketing-section" className="bg-[#0A0A0A] py-24 md:py-32 px-6 md:px-12 lg:px-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#D4AF37] mb-4 flex items-center justify-center gap-2">
+            <Megaphone size={16} />
+            Marketing That Hits Different
+          </p>
+          <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight mb-6">
+            Street Signs.<br />
+            <span className="text-[#A51C30]">Billboards.</span><br />
+            Open House Swag.
+          </h2>
+          <p className="text-white/60 max-w-2xl mx-auto text-lg">
+            Forget boring real estate marketing. This is what happens when you bring 
+            <span className="text-[#D4AF37] font-semibold"> Madison Avenue energy </span> 
+            to San Jose.
+          </p>
+        </div>
+
+        {/* Large Billboard Mockup - Hero */}
+        <div className="mb-12">
+          <div className="relative">
+            {/* Billboard Frame */}
+            <div className="bg-gradient-to-b from-gray-600 to-gray-800 p-4 rounded-sm shadow-2xl">
+              {/* Billboard Content */}
+              <div className="bg-[#A51C30] aspect-[3/1] flex items-center justify-between px-8 md:px-16 relative overflow-hidden">
+                {/* Left side - Text */}
+                <div className="z-10">
+                  <p className="text-white/80 text-sm md:text-lg uppercase tracking-widest mb-2">Just Listed</p>
+                  <h3 className="font-heading text-3xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+                    5214<br />JACANA
+                  </h3>
+                  <p className="text-[#D4AF37] text-2xl md:text-4xl font-heading font-bold mt-2">$950K</p>
+                </div>
+                
+                {/* Right side - Info */}
+                <div className="text-right z-10">
+                  <p className="text-white text-lg md:text-2xl font-bold">3 BED • 2.5 BATH</p>
+                  <p className="text-white/80 text-sm md:text-lg">San Jose, CA</p>
+                  <div className="mt-4 bg-[#D4AF37] text-[#0A0A0A] px-4 py-2 inline-block">
+                    <p className="font-bold text-lg md:text-xl">GTREAL.IO</p>
+                  </div>
+                  <p className="text-white/60 text-sm mt-2">408-603-6603</p>
+                </div>
+                
+                {/* Background pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-black/30 to-transparent"></div>
+                </div>
+              </div>
+            </div>
+            {/* Billboard Stand */}
+            <div className="flex justify-center">
+              <div className="w-8 h-24 bg-gradient-to-b from-gray-600 to-gray-700"></div>
+              <div className="w-8 h-24 bg-gradient-to-b from-gray-600 to-gray-700 ml-32"></div>
+            </div>
+          </div>
+          <p className="text-center text-white/30 text-xs mt-4 uppercase tracking-widest">Highway 101 Billboard Mockup</p>
+        </div>
+
+        {/* Yard Signs Grid */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          {/* Open House Sign */}
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              {/* Sign */}
+              <div className="bg-[#A51C30] w-64 h-40 flex flex-col items-center justify-center shadow-xl border-4 border-white">
+                <p className="text-white text-xs uppercase tracking-widest">Open House</p>
+                <p className="text-white font-heading text-3xl font-bold">TODAY</p>
+                <p className="text-[#D4AF37] text-lg font-bold">1PM - 4PM</p>
+                <p className="text-white/80 text-sm mt-1">5214 Jacana Lane</p>
+              </div>
+              {/* Stake */}
+              <div className="w-2 h-20 bg-gray-400 mx-auto"></div>
+            </div>
+            <p className="text-white/30 text-xs mt-2 uppercase tracking-wider">Yard Sign</p>
+          </div>
+
+          {/* For Sale Sign */}
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              {/* Sign */}
+              <div className="bg-[#0A0A0A] w-64 h-40 flex flex-col items-center justify-center shadow-xl border-4 border-[#D4AF37]">
+                <p className="text-[#D4AF37] text-xs uppercase tracking-widest">For Sale</p>
+                <p className="text-white font-heading text-2xl font-bold">$950,000</p>
+                <p className="text-white/60 text-sm">3 Bed • 2.5 Bath</p>
+                <div className="mt-2 bg-[#A51C30] px-3 py-1">
+                  <p className="text-white text-xs font-bold">GTREAL.IO</p>
+                </div>
+              </div>
+              {/* Stake */}
+              <div className="w-2 h-20 bg-gray-400 mx-auto"></div>
+            </div>
+            <p className="text-white/30 text-xs mt-2 uppercase tracking-wider">For Sale Sign</p>
+          </div>
+
+          {/* Directional Arrow */}
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              {/* Sign */}
+              <div className="bg-[#D4AF37] w-64 h-40 flex items-center justify-center shadow-xl relative">
+                <div className="text-center">
+                  <p className="text-[#0A0A0A] font-heading text-2xl font-bold">OPEN</p>
+                  <p className="text-[#0A0A0A] font-heading text-2xl font-bold">HOUSE</p>
+                  <p className="text-[#0A0A0A]/60 text-sm">→ 2 Blocks</p>
+                </div>
+                {/* Arrow shape */}
+                <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#D4AF37] transform rotate-45"></div>
+              </div>
+              {/* Stake */}
+              <div className="w-2 h-20 bg-gray-400 mx-auto"></div>
+            </div>
+            <p className="text-white/30 text-xs mt-2 uppercase tracking-wider">Directional Sign</p>
+          </div>
+        </div>
+
+        {/* Flyer / Brochure Mockup */}
+        <div className="flex flex-col md:flex-row gap-8 items-center justify-center mb-16">
+          {/* Stack of flyers */}
+          <div className="relative w-72">
+            {/* Back flyers (stacked effect) */}
+            <div className="absolute top-2 left-2 w-full h-80 bg-white/80 shadow-lg transform rotate-2"></div>
+            <div className="absolute top-1 left-1 w-full h-80 bg-white/90 shadow-lg transform rotate-1"></div>
+            {/* Front flyer */}
+            <div className="relative bg-white w-full h-80 shadow-2xl p-4 flex flex-col">
+              <div className="bg-[#A51C30] h-32 flex items-center justify-center mb-3">
+                <div className="text-center">
+                  <p className="text-white font-heading text-2xl font-bold">5214 JACANA</p>
+                  <p className="text-[#D4AF37] text-xl font-bold">$950,000</p>
+                </div>
+              </div>
+              <div className="flex-1 text-[#0A0A0A]">
+                <p className="text-sm font-bold mb-1">3 Bed • 2.5 Bath • 1,142 Sq Ft</p>
+                <p className="text-xs text-gray-600 mb-2">San Jose, CA 95123</p>
+                <div className="grid grid-cols-2 gap-1 text-xs mb-2">
+                  <span>✓ Stone Fireplace</span>
+                  <span>✓ EV Ready</span>
+                  <span>✓ Central AC</span>
+                  <span>✓ Garage</span>
+                </div>
+                <div className="mt-auto border-t pt-2">
+                  <p className="text-[#A51C30] font-bold text-sm">George Toscano</p>
+                  <p className="text-xs">408-603-6603 • GTREAL.IO</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center md:text-left max-w-sm">
+            <p className="text-[#D4AF37] text-xs uppercase tracking-widest mb-2">Open House Ready</p>
+            <h3 className="text-white font-heading text-2xl font-bold mb-3">Property Flyers</h3>
+            <p className="text-white/60 text-sm">Stacked on the kitchen counter. Take one — or take five for your friends who are still renting.</p>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <div className="inline-block bg-[#A51C30] p-1">
+            <div className="bg-[#0A0A0A] px-8 py-4">
+              <p className="text-[#D4AF37] font-heading text-xl md:text-2xl font-semibold">
+                Want custom marketing like this?
+              </p>
+              <a 
+                href="https://gtreal.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-white/60 text-sm hover:text-[#D4AF37] transition-colors"
+              >
+                Talk to GT Real →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Animated scroll text */}
+        <div className="mt-16 overflow-hidden">
+          <div className="flex gap-12 animate-scroll-left whitespace-nowrap">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex gap-12">
+                <span className="text-6xl md:text-8xl font-heading font-bold text-white/5">GTREAL.IO</span>
+                <span className="text-6xl md:text-8xl font-heading font-bold text-[#A51C30]/10">5214 JACANA</span>
+                <span className="text-6xl md:text-8xl font-heading font-bold text-[#D4AF37]/10">$950K</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // Platform Links Section - Zillow and Redfin tiles
 const PlatformLinksSection = () => {
   return (
@@ -842,32 +1152,37 @@ const PlatformLinksSection = () => {
   );
 };
 
-// Footer with GT Real shoutout
+// Footer with GT Real shoutout and Charlotte design credit
 const Footer = () => {
   return (
-    <footer data-testid="footer" className="bg-[#0A0A0A] py-12 px-6 md:px-12 lg:px-24 border-t border-white/10">
+    <footer data-testid="footer" className="bg-[#0A0A0A] py-16 px-6 md:px-12 lg:px-24 border-t border-white/10">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* Main footer content */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div>
-            <p className="font-heading text-xl text-white mb-1">5214 Jacana Lane</p>
+            <p className="font-heading text-2xl text-white mb-1">5214 Jacana Lane</p>
             <p className="text-sm text-white/40">San Jose, CA 95123</p>
           </div>
+          
+          {/* GT Real - Prominent branding */}
           <div className="text-center">
-            {/* GT Real Shoutout - More prominent */}
             <a 
               href="https://gtreal.io" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex flex-col items-center group"
             >
-              <p className="text-[#D4AF37] text-lg font-heading font-semibold tracking-wide group-hover:text-white transition-colors">
-                GT REAL
-              </p>
+              <div className="bg-[#A51C30] px-6 py-3 mb-2 group-hover:bg-[#D4AF37] transition-colors">
+                <p className="text-white text-2xl font-heading font-bold tracking-wider group-hover:text-[#0A0A0A] transition-colors">
+                  GTREAL.IO
+                </p>
+              </div>
               <p className="text-white/40 text-xs uppercase tracking-[0.2em] group-hover:text-[#D4AF37] transition-colors">
                 Get Real. Get Results.
               </p>
             </a>
           </div>
+          
           <div className="text-center md:text-right">
             <p className="text-sm text-white/60">
               © 2025 George Toscano
@@ -876,6 +1191,19 @@ const Footer = () => {
               DRE# 02213878 • Kollab Real Estate
             </p>
           </div>
+        </div>
+        
+        {/* Design credit - Charlotte */}
+        <div className="pt-8 border-t border-white/5 text-center">
+          <a 
+            href="https://charlottesoftwareengineering.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-white/20 hover:text-[#D4AF37] transition-colors group"
+          >
+            <span className="text-xs uppercase tracking-[0.3em]">design by</span>
+            <span className="text-sm font-medium text-white/40 group-hover:text-[#D4AF37] transition-colors">Charlotte.</span>
+          </a>
         </div>
       </div>
     </footer>
@@ -892,6 +1220,7 @@ function App() {
       <MortgageCalculator />
       <DroneSection />
       <AgentSection />
+      <MarketingSection />
       <PlatformLinksSection />
       <Footer />
       <MusicPlayer />

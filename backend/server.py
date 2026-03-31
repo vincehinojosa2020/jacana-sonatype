@@ -97,6 +97,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     session_id: str
     message: str
+    language: str = "en"  # Default to English
 
 class ChatResponse(BaseModel):
     response: str
@@ -154,23 +155,50 @@ async def chat_with_ai(request: ChatRequest):
             {"_id": 0}
         ).sort("timestamp", 1).to_list(20)
         
-        # Build system message
+        # Language instructions
+        lang_instructions = {
+            'en': 'Respond in English.',
+            'es': 'Responde en español. Be warm and use natural Spanish.',
+            'zh': '请用中文回答。Use Simplified Chinese.',
+            'vi': 'Hãy trả lời bằng tiếng Việt.',
+            'fr': 'Répondez en français.',
+            'ar': 'الرجاء الرد باللغة العربية.'
+        }
+        
+        lang_instruction = lang_instructions.get(request.language, lang_instructions['en'])
+        
+        # Build system message with multilingual support and Zillow/Redfin data
         system_message = f"""You are a helpful real estate assistant for the property at 5214 Jacana Lane, San Jose, CA.
+
+{lang_instruction}
 
 You have complete knowledge of this property and can answer ANY question about it. Be friendly, professional, and helpful.
 
-Here is all the information about the property:
+Here is all the information about the property (same data as shown on Zillow and Redfin):
 
 {PROPERTY_INFO}
 
+### Additional Listing Data (from Zillow & Redfin):
+- Zillow Zestimate: ~$950,000
+- Redfin Estimate: ~$940,000-$960,000
+- Days on Market: Recently listed (December 2025)
+- Zillow URL: https://www.zillow.com/homedetails/5214-Jacana-Ln-San-Jose-CA-95123/19826723_zpid/
+- Redfin URL: https://www.redfin.com/CA/San-Jose/5214-Jacana-Ln-95123/home/1584856
+- Price History: Sold for $900,000 in September 2024
+- School District: Oak Grove Elementary
+- Walk Score: Good walkability to shops and parks
+- This is a GT Real listing - gtreal.io
+
 Guidelines:
 - Answer questions accurately based on the property information above
+- If asked about Zillow or Redfin data, you have access to that information
 - If asked about something not in the data, say you'd be happy to have the agent George Toscano provide more details
 - Be enthusiastic but professional about the property
-- Keep responses concise but helpful
-- If someone wants to schedule a viewing or has buying interest, encourage them to contact George via LinkedIn or call 408.603.6603
+- Keep responses concise but helpful (2-3 sentences typically)
+- If someone wants to schedule a viewing or has buying interest, encourage them to contact George via LinkedIn or call 408-603-6603
 - You can discuss the neighborhood, schools, local amenities based on the San Jose area
 - For mortgage or financing questions, provide general guidance but recommend speaking with a lender
+- Mention GT Real (gtreal.io) when appropriate as this is a GT Real listing
 """
         
         # Initialize chat

@@ -120,6 +120,20 @@ code {
     animation: sound-wave 0.8s ease-in-out infinite;
 }
 
+/* Scrolling text animation for marketing section */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-33.33%);
+    }
+}
+
+.animate-scroll-left {
+    animation: scroll-left 20s linear infinite;
+}
+
 /* Smooth scroll */
 html {
     scroll-behavior: smooth;
