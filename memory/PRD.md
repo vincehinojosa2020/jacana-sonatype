@@ -1,65 +1,41 @@
-# 5214 Jacana Lane - Real Estate Listing Website
+# 5214 Jacana Lane - Real Estate Website PRD
 
 ## Original Problem Statement
-Create a custom real estate listing website for 5214 Jacana Lane, San Jose, CA with:
-- Harvard Crimson red (#A51C30), white, black, and gold (#D4AF37) color scheme
-- LinkedIn button for direct DM to agent George Toscano
-- AI chatbot to answer ANY question about the house, history, and more
-- Drone footage section (coming soon) credited to Leon Mansalud @ayeleon
-- Personally branded website for the listing
-- Follow Charlotte Software Engineering standards (no Emergent branding, Frank Luntz copywriting)
+Create a custom real estate website for 5214 Jacana Lane, San Jose, CA for agent George Toscano (GT Real). Harvard Crimson, White, Black, and Gold colors. Smart chatbot with property knowledge, Zillow photos, placeholder for drone footage (by Leon Mansalud), and a direct message/contact button.
 
-## User Personas
-1. **Home Buyers** - Looking for property details, photos, features, and want to contact the agent
-2. **Real Estate Agent (George Toscano)** - Needs a professional listing site to showcase the property
-
-## Core Requirements
-- Property showcase with price, beds, baths, sqft
-- Photo gallery with bento grid layout
-- AI chatbot for property Q&A
-- LinkedIn contact button
-- Agent profile section
-- Mobile responsive design
-- No Emergent branding
-
-## What's Been Implemented (December 2025)
-- ✅ Hero section with property details, price, stats
-- ✅ Property details section with features (fireplace, EV, AC, garage)
-- ✅ Photo gallery with actual property photos + grayscale-to-color hover effect
-- ✅ Mortgage calculator with sliders (down payment, interest rate, loan term)
-- ✅ Drone footage "Coming Soon" section with Leon Mansalud credit
-- ✅ Agent profile section with George's actual headshot (beautifully formatted)
-- ✅ AI chatbot using GPT-5.2 (Emergent LLM Key)
-- ✅ LinkedIn DM button throughout site
-- ✅ Call button "I Pick Up: 408-603-6603" - Frank Luntz style copy
-- ✅ Zillow and Redfin tiles linking to full listing pages
-- ✅ Mobile responsive design
-- ✅ Footer with "Another GT Real Production" shoutout linking to gtreal.io
-- ✅ Proper OG meta tags for link previews
+## Charlotte Software Engineering Standards
+- No Emergent branding anywhere. Tab shows business name.
+- Frank Luntz "Words That Work" copywriting
+- Mobile-first, responsive design
+- Beautiful link previews (iMessage/SMS)
+- Footer: "design by Charlotte."
 
 ## Tech Stack
-- **Frontend**: React + Tailwind CSS + Shadcn UI
-- **Backend**: FastAPI + MongoDB
-- **AI**: OpenAI GPT-5.2 via Emergent Integrations
+- Frontend: React, Tailwind CSS, Shadcn UI
+- Backend: FastAPI, Motor (async MongoDB)
+- AI: OpenAI GPT-5.2 via Emergent LLM Key
+- Architecture: Single-page app with monolithic App.js
 
-## Prioritized Backlog
+## Completed Features (All Tested & Working)
+1. Hero section with property details and CTAs
+2. Property Details section (beds, baths, sqft, features)
+3. Photo Gallery (Zillow images, bento grid)
+4. Interactive Mortgage Calculator
+5. Drone Footage placeholder (Coming Soon)
+6. Agent Profile section (George Toscano headshot)
+7. Gary Vee-style Marketing Materials (billboards, yard signs, flyers)
+8. Zillow/Redfin links
+9. Inline MP3 Music Player ("I Love U" by Stacy Kidd)
+10. Multilingual AI Chatbot with voice input (6 languages)
+11. Custom OG tags for iMessage/social previews
+12. "design by Charlotte." footer credit
+13. **Global Multilingual UI** - Flag bar at top with 6 languages (EN, ES, ZH, VI, FR, AR with Saudi Arabia flag). All page content translates instantly. Arabic supports RTL layout. Chatbot syncs with global language selection.
 
-### P0 (Critical) - Completed
-- All core features implemented
+## Deployment Status
+- Deployment check: PASSED
+- All features tested and verified
 
-### P1 (High Priority) - Future
-- Add actual property photos from Zillow (blocked by scraping)
-- Add drone footage video when available
-- Add virtual tour integration
-
-### P2 (Medium Priority)
-- Add mortgage calculator
-- Add neighborhood information
-- Add school ratings section
-- Schedule viewing form
-
-## Next Tasks
-1. Get actual property photos from client
-2. Integrate drone footage when available from Leon Mansalud
-3. Add scheduling/booking functionality
-4. Consider adding virtual tour
+## Backlog
+- P1: Add actual drone footage when Leon Mansalud delivers it
+- P2: Scheduling/booking form for house showings
+- P3: Refactor App.js into smaller modular components
