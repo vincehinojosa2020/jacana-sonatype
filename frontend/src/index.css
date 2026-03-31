@@ -139,6 +139,70 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Groovy text effects */
+.groovy-heading {
+    background: linear-gradient(135deg, #ffffff 0%, #D4AF37 50%, #ffffff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: groovy-shimmer 4s ease-in-out infinite;
+}
+
+@keyframes groovy-shimmer {
+    0% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+    100% { background-position: 0% center; }
+}
+
+/* Gold accent underline that slides in */
+.gold-underline {
+    position: relative;
+    display: inline-block;
+}
+
+.gold-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37, #A51C30);
+    animation: underline-grow 1.5s ease-out forwards;
+}
+
+@keyframes underline-grow {
+    from { width: 0; }
+    to { width: 60px; }
+}
+
+/* Section label entrance animation */
+.section-label {
+    animation: label-slide-in 0.8s ease-out;
+}
+
+@keyframes label-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Flag bar active indicator pulse */
+@keyframes flag-glow {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4)); }
+    50% { filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.8)); }
+}
+
+.flag-active {
+    animation: flag-glow 2s ease-in-out infinite;
+}
+
 /* Image hover effect */
 .img-grayscale {
     filter: grayscale(100%);

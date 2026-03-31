@@ -500,27 +500,31 @@ const LanguageProvider = ({ children }) => {
   
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
-      {/* Top Language Flag Bar */}
-      <div data-testid="language-bar" className="fixed top-0 left-0 right-0 z-[60] bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-[#D4AF37]/20" style={{ direction: 'ltr' }}>
-        <div className="flex items-center justify-center gap-1 py-2 px-4">
+      {/* Top Language Flag Bar - Super Visible */}
+      <div data-testid="language-bar" className="fixed top-0 left-0 right-0 z-[60] bg-[#0A0A0A] border-b-2 border-[#D4AF37]/40" style={{ direction: 'ltr' }}>
+        <div className="flex items-center justify-center gap-3 sm:gap-5 py-3 sm:py-4 px-4">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
               data-testid={`lang-flag-${lang.code}`}
               onClick={() => setLanguage(lang)}
-              className={`text-xl sm:text-2xl px-1.5 sm:px-2 py-1 transition-all duration-200 hover:scale-125 cursor-pointer ${
+              className={`text-3xl sm:text-4xl transition-all duration-300 hover:scale-130 cursor-pointer relative ${
                 language.code === lang.code 
-                  ? 'scale-125 opacity-100 drop-shadow-lg' 
-                  : 'opacity-40 hover:opacity-80'
+                  ? 'scale-125 sm:scale-130 opacity-100 flag-active' 
+                  : 'opacity-60 hover:opacity-100'
               }`}
               title={lang.name}
+              style={{ filter: language.code === lang.code ? 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.6))' : undefined }}
             >
               {lang.flag}
+              {language.code === lang.code && (
+                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-[#D4AF37] rounded-full"></span>
+              )}
             </button>
           ))}
         </div>
       </div>
-      <div style={{ paddingTop: '48px' }} dir={language.code === 'ar' ? 'rtl' : 'ltr'}>
+      <div style={{ paddingTop: '64px' }} dir={language.code === 'ar' ? 'rtl' : 'ltr'}>
         {children}
       </div>
     </LanguageContext.Provider>
@@ -665,7 +669,7 @@ const MortgageCalculator = () => {
   return (
     <section data-testid="mortgage-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto">
-        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 section-label gold-underline">
           {t('yourInvestment')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-4">
@@ -1086,7 +1090,7 @@ const HeroSection = () => {
           </p>
 
           {/* Address */}
-          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-medium text-white tracking-tighter mb-4">
+          <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-medium text-white tracking-tighter mb-4 groovy-heading">
             {PROPERTY_DATA.address}
           </h1>
           <p className="font-body text-xl md:text-2xl text-white/80 mb-8 flex items-center gap-2">
@@ -1168,11 +1172,11 @@ const DetailsSection = () => {
     <section id="details" data-testid="details-section" className="bg-[#FAFAFA] py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
-        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 section-label gold-underline">
           {t('propertyOverview')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-16">
-          {t('moveInReady')}<br />{t('noCompromises')}
+          {t('moveInReady')}<br /><span className="text-[#A51C30]">{t('noCompromises')}</span>
         </h2>
 
         {/* Stats Grid */}
@@ -1232,7 +1236,7 @@ const GallerySection = () => {
     <section data-testid="gallery-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
-        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 section-label gold-underline">
           {t('seeForYourself')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-12">
