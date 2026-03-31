@@ -4,6 +4,7 @@ import axios from "axios";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { ScrollArea } from "./components/ui/scroll-area";
+import { Slider } from "./components/ui/slider";
 import { 
   MessageCircle, 
   X, 
@@ -23,13 +24,15 @@ import {
   Play,
   ChevronDown,
   MapPin,
-  DollarSign
+  DollarSign,
+  Calculator,
+  ExternalLink
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Property images from design guidelines + additional relevant images
+// Actual property images from uploaded assets + hero image we're keeping
 const PROPERTY_IMAGES = [
   {
     url: "https://images.pexels.com/photos/16787444/pexels-photo-16787444.png",
@@ -37,29 +40,36 @@ const PROPERTY_IMAGES = [
     category: "exterior"
   },
   {
-    url: "https://images.pexels.com/photos/8583808/pexels-photo-8583808.jpeg",
-    alt: "Living room with vaulted ceilings",
+    url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/ihjd1v5s_59b9d56347618cb43e28559e1f7da8ad-cc_ft_384.webp",
+    alt: "Living room with stone fireplace",
     category: "living"
   },
   {
-    url: "https://images.pexels.com/photos/16501663/pexels-photo-16501663.jpeg",
-    alt: "Modern kitchen with granite countertops",
-    category: "kitchen"
+    url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/ty2w647j_9b23ab2f6f901c9ab26d0ff958688091-cc_ft_768.webp",
+    alt: "Property exterior street view",
+    category: "exterior"
   },
   {
-    url: "https://images.pexels.com/photos/1643384/pexels-photo-1643384.jpeg",
-    alt: "Master bedroom",
-    category: "bedroom"
+    url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/9eaxu7ts_eaf224eb1751e8f11ed9d12eed9b2e95-cc_ft_768.webp",
+    alt: "In-unit washer and dryer",
+    category: "laundry"
+  },
+  {
+    url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/koscaccz_ada96c0e4a65eab0b64a853db9e0ba75-cc_ft_384.webp",
+    alt: "Living room with fireplace - another view",
+    category: "living"
   }
 ];
 
-const AGENT_IMAGE = "https://images.pexels.com/photos/7641843/pexels-photo-7641843.jpeg";
+// George's actual headshot
+const AGENT_IMAGE = "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/sc55xg76_image.png";
 
 // Property data
 const PROPERTY_DATA = {
   address: "5214 Jacana Lane",
   city: "San Jose, CA 95123",
-  price: "$950,000",
+  price: 950000,
+  priceFormatted: "$950,000",
   pricePerSqft: "$832/sq ft",
   beds: 3,
   baths: 2.5,
@@ -67,11 +77,160 @@ const PROPERTY_DATA = {
   yearBuilt: 1988,
   hoa: "$255/mo",
   features: [
-    { icon: Flame, label: "Fireplace", desc: "Cozy living room fireplace" },
-    { icon: Zap, label: "EV Ready", desc: "Electric vehicle charging hookup" },
-    { icon: Thermometer, label: "Central AC", desc: "Year-round comfort" },
-    { icon: Car, label: "Garage", desc: "Attached garage + parking" }
+    { icon: Flame, label: "Stone Fireplace", desc: "Cozy gatherings start here" },
+    { icon: Zap, label: "EV Ready", desc: "Charge while you sleep" },
+    { icon: Thermometer, label: "Central AC", desc: "Comfort all year round" },
+    { icon: Car, label: "Garage", desc: "Attached with extra parking" }
   ]
+};
+
+// Mortgage Calculator Component
+const MortgageCalculator = () => {
+  const [homePrice] = useState(PROPERTY_DATA.price);
+  const [downPayment, setDownPayment] = useState(190000); // 20%
+  const [interestRate, setInterestRate] = useState(6.5);
+  const [loanTerm, setLoanTerm] = useState(30);
+
+  const calculateMonthlyPayment = () => {
+    const principal = homePrice - downPayment;
+    const monthlyRate = interestRate / 100 / 12;
+    const numPayments = loanTerm * 12;
+    
+    if (monthlyRate === 0) return principal / numPayments;
+    
+    const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                    (Math.pow(1 + monthlyRate, numPayments) - 1);
+    
+    return payment;
+  };
+
+  const monthlyPayment = calculateMonthlyPayment();
+  const monthlyHOA = 255;
+  const totalMonthly = monthlyPayment + monthlyHOA;
+  const downPaymentPercent = ((downPayment / homePrice) * 100).toFixed(0);
+
+  return (
+    <section data-testid="mortgage-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
+      <div className="max-w-4xl mx-auto">
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
+          Your Investment
+        </p>
+        <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-4">
+          What's My Payment?
+        </h2>
+        <p className="text-gray-600 mb-12 font-body">
+          See exactly what you'd pay. No surprises.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Calculator Inputs */}
+          <div className="space-y-8">
+            {/* Down Payment */}
+            <div>
+              <div className="flex justify-between mb-3">
+                <label className="text-sm font-medium text-gray-700">Down Payment</label>
+                <span className="text-sm font-bold text-[#A51C30]">
+                  ${downPayment.toLocaleString()} ({downPaymentPercent}%)
+                </span>
+              </div>
+              <Slider
+                data-testid="down-payment-slider"
+                value={[downPayment]}
+                onValueChange={(value) => setDownPayment(value[0])}
+                min={47500}
+                max={475000}
+                step={5000}
+                className="[&_[role=slider]]:bg-[#A51C30] [&_[role=slider]]:border-[#A51C30]"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-2">
+                <span>5%</span>
+                <span>50%</span>
+              </div>
+            </div>
+
+            {/* Interest Rate */}
+            <div>
+              <div className="flex justify-between mb-3">
+                <label className="text-sm font-medium text-gray-700">Interest Rate</label>
+                <span className="text-sm font-bold text-[#A51C30]">{interestRate}%</span>
+              </div>
+              <Slider
+                data-testid="interest-rate-slider"
+                value={[interestRate]}
+                onValueChange={(value) => setInterestRate(value[0])}
+                min={4}
+                max={9}
+                step={0.125}
+                className="[&_[role=slider]]:bg-[#A51C30] [&_[role=slider]]:border-[#A51C30]"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-2">
+                <span>4%</span>
+                <span>9%</span>
+              </div>
+            </div>
+
+            {/* Loan Term */}
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-3 block">Loan Term</label>
+              <div className="flex gap-4">
+                {[15, 20, 30].map((term) => (
+                  <button
+                    key={term}
+                    data-testid={`loan-term-${term}`}
+                    onClick={() => setLoanTerm(term)}
+                    className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-all ${
+                      loanTerm === term 
+                        ? 'bg-[#A51C30] text-white' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    {term} Years
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="bg-[#0A0A0A] p-8 text-white">
+            <div className="flex items-center gap-2 mb-6">
+              <Calculator className="text-[#D4AF37]" size={24} />
+              <span className="text-sm uppercase tracking-wider text-white/60">Your Monthly Payment</span>
+            </div>
+            
+            <p className="text-5xl font-heading font-semibold text-white mb-2">
+              ${Math.round(totalMonthly).toLocaleString()}
+            </p>
+            <p className="text-sm text-white/60 mb-8">per month (including HOA)</p>
+
+            <div className="space-y-4 pt-6 border-t border-white/10">
+              <div className="flex justify-between">
+                <span className="text-white/60">Principal & Interest</span>
+                <span className="font-medium">${Math.round(monthlyPayment).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/60">HOA Dues</span>
+                <span className="font-medium">${monthlyHOA}</span>
+              </div>
+              <div className="flex justify-between pt-4 border-t border-white/10">
+                <span className="text-white/60">Loan Amount</span>
+                <span className="font-medium">${(homePrice - downPayment).toLocaleString()}</span>
+              </div>
+            </div>
+
+            <a
+              data-testid="mortgage-cta"
+              href="tel:4086036603"
+              className="mt-8 w-full bg-[#A51C30] hover:bg-[#8A1527] text-white py-4 flex items-center justify-center gap-2 font-bold uppercase text-sm transition-colors"
+            >
+              <Phone size={18} />
+              Let's Make It Happen
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 // Chatbot Component
@@ -80,7 +239,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hi! I'm here to answer any questions about 5214 Jacana Lane. What would you like to know?"
+      content: "Hey! Ask me anything about 5214 Jacana Lane. Price, features, neighborhood—I've got answers."
     }
   ]);
   const [input, setInput] = useState("");
@@ -114,7 +273,7 @@ const Chatbot = () => {
       console.error("Chat error:", error);
       setMessages(prev => [...prev, { 
         role: "assistant", 
-        content: "I apologize, but I'm having trouble connecting right now. Please call George directly at 408.603.6603 for immediate assistance."
+        content: "Having trouble connecting. Call George directly at 408-603-6603 — he picks up."
       }]);
     } finally {
       setIsLoading(false);
@@ -152,7 +311,7 @@ const Chatbot = () => {
             <div className="flex items-center gap-3">
               <Home size={20} />
               <div>
-                <h3 className="font-heading text-lg font-semibold">Property Assistant</h3>
+                <h3 className="font-heading text-lg font-semibold">Ask Anything</h3>
                 <p className="text-xs opacity-80">5214 Jacana Lane</p>
               </div>
             </div>
@@ -237,7 +396,7 @@ const HeroSection = () => {
 
   return (
     <section data-testid="hero-section" className="relative min-h-screen flex items-center">
-      {/* Background Image */}
+      {/* Background Image - keeping the beautiful landing page photo */}
       <div className="absolute inset-0">
         <img
           src={PROPERTY_IMAGES[0].url}
@@ -252,7 +411,7 @@ const HeroSection = () => {
         <div className="max-w-3xl">
           {/* Label */}
           <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#D4AF37] mb-4">
-            Exclusive Listing
+            Just Listed • San Jose
           </p>
 
           {/* Address */}
@@ -268,7 +427,7 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-8 mb-12">
             <div>
               <p className="text-4xl md:text-5xl font-heading font-semibold text-white">
-                {PROPERTY_DATA.price}
+                {PROPERTY_DATA.priceFormatted}
               </p>
               <p className="text-sm text-white/60 mt-1">{PROPERTY_DATA.pricePerSqft}</p>
             </div>
@@ -288,7 +447,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* CTAs */}
+          {/* CTAs - Frank Luntz style */}
           <div className="flex flex-wrap gap-4">
             <a
               data-testid="hero-linkedin-btn"
@@ -298,7 +457,7 @@ const HeroSection = () => {
               className="linkedin-btn relative overflow-hidden bg-[#0A0A0A] text-[#D4AF37] hover:bg-[#1A1A1A] border border-[#D4AF37]/30 transition-all duration-300 px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
             >
               <Linkedin size={20} />
-              Message George on LinkedIn
+              Message George Now
             </a>
             <a
               data-testid="hero-call-btn"
@@ -306,7 +465,7 @@ const HeroSection = () => {
               className="bg-[#A51C30] text-white hover:bg-[#8A1527] transition-colors duration-300 px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
             >
               <Phone size={20} />
-              Call 408.603.6603
+              I Pick Up: 408-603-6603
             </a>
           </div>
         </div>
@@ -330,10 +489,10 @@ const DetailsSection = () => {
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
-          Property Overview
+          The Details
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-16">
-          Contemporary Living<br />in the Heart of San Jose
+          Move-In Ready.<br />No Compromises.
         </h2>
 
         {/* Stats Grid */}
@@ -377,7 +536,7 @@ const DetailsSection = () => {
             <DollarSign className="text-[#A51C30]" size={24} />
             <div>
               <p className="font-medium text-[#0A0A0A]">HOA: {PROPERTY_DATA.hoa}</p>
-              <p className="text-sm text-gray-600">Includes utilities, sewer, and water</p>
+              <p className="text-sm text-gray-600">Utilities, sewer, water—all included. No surprises.</p>
             </div>
           </div>
         </div>
@@ -386,30 +545,62 @@ const DetailsSection = () => {
   );
 };
 
-// Photo Gallery Section
+// Photo Gallery Section - with all actual property photos
 const GallerySection = () => {
   return (
     <section data-testid="gallery-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
-          Photo Gallery
+          See For Yourself
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-12">
-          See Every Detail
+          Every Room. Every Detail.
         </h2>
 
-        {/* Bento Grid */}
-        <div className="bento-grid">
-          {PROPERTY_IMAGES.map((img, idx) => (
-            <div key={idx} className="bento-item overflow-hidden group">
-              <img
-                src={img.url}
-                alt={img.alt}
-                className="w-full h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
-              />
-            </div>
-          ))}
+        {/* Bento Grid - now with 5 images */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
+          {/* Large image - exterior */}
+          <div className="col-span-2 row-span-2 overflow-hidden group">
+            <img
+              src={PROPERTY_IMAGES[0].url}
+              alt={PROPERTY_IMAGES[0].alt}
+              className="w-full h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
+              style={{ minHeight: '400px' }}
+            />
+          </div>
+          {/* Living room */}
+          <div className="overflow-hidden group">
+            <img
+              src={PROPERTY_IMAGES[1].url}
+              alt={PROPERTY_IMAGES[1].alt}
+              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
+            />
+          </div>
+          {/* Exterior street view */}
+          <div className="overflow-hidden group">
+            <img
+              src={PROPERTY_IMAGES[2].url}
+              alt={PROPERTY_IMAGES[2].alt}
+              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
+            />
+          </div>
+          {/* Laundry */}
+          <div className="overflow-hidden group">
+            <img
+              src={PROPERTY_IMAGES[3].url}
+              alt={PROPERTY_IMAGES[3].alt}
+              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
+            />
+          </div>
+          {/* Living room another view */}
+          <div className="overflow-hidden group">
+            <img
+              src={PROPERTY_IMAGES[4].url}
+              alt={PROPERTY_IMAGES[4].alt}
+              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -423,10 +614,10 @@ const DroneSection = () => {
       <div className="max-w-7xl mx-auto text-center">
         {/* Section Label */}
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#D4AF37] mb-4">
-          Aerial View
+          Coming Soon
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-white tracking-tight mb-12">
-          Drone Footage
+          Aerial View
         </h2>
 
         {/* Video Placeholder */}
@@ -436,14 +627,15 @@ const DroneSection = () => {
               <Play className="text-[#D4AF37]" size={32} />
             </div>
             <p className="pulse-text text-[#D4AF37] font-heading text-2xl md:text-3xl font-medium tracking-wider uppercase">
-              Coming Soon
+              Drone Footage
             </p>
+            <p className="text-white/40 text-sm mt-2">Launching soon</p>
           </div>
         </div>
 
         {/* Credit */}
         <p className="mt-8 text-xs tracking-[0.2em] uppercase text-white/40">
-          Drone footage by Leon Mansalud{" "}
+          Captured by Leon Mansalud{" "}
           <a 
             href="https://www.instagram.com/ayeleon" 
             target="_blank" 
@@ -458,20 +650,29 @@ const DroneSection = () => {
   );
 };
 
-// Agent Profile Section
+// Agent Profile Section - with George's actual headshot
 const AgentSection = () => {
   return (
     <section data-testid="agent-section" className="bg-[#111111] py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Agent Image */}
-          <div className="order-2 md:order-1">
-            <div className="aspect-square max-w-md mx-auto overflow-hidden border border-[#D4AF37]/20">
-              <img
-                src={AGENT_IMAGE}
-                alt="George Toscano - Real Estate Agent"
-                className="w-full h-full object-cover img-grayscale hover:filter-none transition-all duration-500"
-              />
+          {/* Agent Image - properly formatted */}
+          <div className="order-2 md:order-1 flex justify-center">
+            <div className="relative">
+              {/* Background accent */}
+              <div className="absolute -inset-4 bg-gradient-to-br from-[#A51C30]/20 to-[#D4AF37]/20 -z-10"></div>
+              {/* Image container */}
+              <div className="w-80 h-96 overflow-hidden border-2 border-[#D4AF37]/30 bg-gradient-to-b from-white to-gray-100">
+                <img
+                  src={AGENT_IMAGE}
+                  alt="George Toscano - Your Bay Area Realtor"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              {/* Name badge */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#A51C30] px-6 py-2">
+                <p className="text-white text-sm font-bold uppercase tracking-wider whitespace-nowrap">George Toscano</p>
+              </div>
             </div>
           </div>
 
@@ -488,9 +689,9 @@ const AgentSection = () => {
             </p>
 
             <p className="font-body text-lg text-white/80 leading-relaxed mb-8">
-              Bay Area Realtor with 20+ years in tech. Data is my language. 
-              When you work with me, you get results—no games, no gimmicks. 
-              I answer when you call. I fight for your corner. Period.
+              20 years in tech. Data is my language. When you work with me, 
+              you get someone who actually picks up the phone. No games. No gimmicks. 
+              Just results.
             </p>
 
             {/* Contact Buttons */}
@@ -503,7 +704,7 @@ const AgentSection = () => {
                 className="linkedin-btn relative overflow-hidden w-full bg-[#0A0A0A] text-[#D4AF37] hover:bg-[#1A1A1A] border border-[#D4AF37]/30 transition-all duration-300 px-8 py-4 flex items-center justify-center gap-3 font-bold uppercase text-sm"
               >
                 <Linkedin size={20} />
-                Message Me on LinkedIn
+                Let's Connect on LinkedIn
               </a>
               <div className="grid grid-cols-2 gap-4">
                 <a
@@ -512,7 +713,7 @@ const AgentSection = () => {
                   className="bg-[#A51C30] text-white hover:bg-[#8A1527] transition-colors duration-300 px-6 py-4 flex items-center justify-center gap-2 font-bold uppercase text-sm"
                 >
                   <Phone size={18} />
-                  Call
+                  Call Me
                 </a>
                 <a
                   data-testid="agent-email-btn"
@@ -531,7 +732,55 @@ const AgentSection = () => {
   );
 };
 
-// Footer
+// Platform Links Section - Zillow and Redfin tiles
+const PlatformLinksSection = () => {
+  return (
+    <section data-testid="platform-links-section" className="bg-[#FAFAFA] py-16 px-6 md:px-12 lg:px-24">
+      <div className="max-w-4xl mx-auto">
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 text-center">
+          More Details
+        </p>
+        <h2 className="font-heading text-2xl md:text-3xl font-medium text-[#0A0A0A] tracking-tight mb-8 text-center">
+          See the Full Listing
+        </h2>
+        
+        <div className="grid grid-cols-2 gap-4">
+          {/* Zillow Tile */}
+          <a
+            data-testid="zillow-link"
+            href="https://www.zillow.com/homedetails/5214-Jacana-Ln-San-Jose-CA-95123/19826723_zpid/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:border-[#A51C30]/30 hover:shadow-lg transition-all group"
+          >
+            <div className="w-12 h-12 bg-[#006AFF] flex items-center justify-center">
+              <span className="text-white font-bold text-lg">Z</span>
+            </div>
+            <span className="font-bold text-[#0A0A0A] uppercase text-sm tracking-wider">Zillow</span>
+            <ExternalLink size={16} className="text-gray-400 group-hover:text-[#A51C30] transition-colors" />
+          </a>
+          
+          {/* Redfin Tile */}
+          <a
+            data-testid="redfin-link"
+            href="https://www.redfin.com/CA/San-Jose/5214-Jacana-Ln-95123/home/1584856"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:border-[#A51C30]/30 hover:shadow-lg transition-all group"
+          >
+            <div className="w-12 h-12 bg-[#A02021] flex items-center justify-center">
+              <span className="text-white font-bold text-lg">R</span>
+            </div>
+            <span className="font-bold text-[#0A0A0A] uppercase text-sm tracking-wider">Redfin</span>
+            <ExternalLink size={16} className="text-gray-400 group-hover:text-[#A51C30] transition-colors" />
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Footer with GT Real shoutout
 const Footer = () => {
   return (
     <footer data-testid="footer" className="bg-[#0A0A0A] py-12 px-6 md:px-12 lg:px-24 border-t border-white/10">
@@ -540,6 +789,19 @@ const Footer = () => {
           <div>
             <p className="font-heading text-xl text-white mb-1">5214 Jacana Lane</p>
             <p className="text-sm text-white/40">San Jose, CA 95123</p>
+          </div>
+          <div className="text-center">
+            {/* GT Real Shoutout */}
+            <a 
+              href="https://gtreal.io" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block mb-2 group"
+            >
+              <p className="text-[#D4AF37] text-sm font-bold uppercase tracking-[0.15em] group-hover:text-white transition-colors">
+                Another GT Real Production
+              </p>
+            </a>
           </div>
           <div className="text-center md:text-right">
             <p className="text-sm text-white/60">
@@ -562,8 +824,10 @@ function App() {
       <HeroSection />
       <DetailsSection />
       <GallerySection />
+      <MortgageCalculator />
       <DroneSection />
       <AgentSection />
+      <PlatformLinksSection />
       <Footer />
       <Chatbot />
     </div>
