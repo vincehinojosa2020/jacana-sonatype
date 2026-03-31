@@ -86,173 +86,39 @@ const PROPERTY_DATA = {
   ]
 };
 
-// Music Player Component - Ish Mendoza style with custom cursor
+// Music Player Component - Matching chatbot design (square red button)
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const playerRef = useRef(null);
-  const ytPlayerRef = useRef(null);
-  const [playerReady, setPlayerReady] = useState(false);
-
-  // YouTube video ID for the song
-  const YOUTUBE_VIDEO_ID = "zGHkStEYC6M";
-
-  useEffect(() => {
-    // Load YouTube IFrame API
-    if (!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
-
-    const initPlayer = () => {
-      if (window.YT && window.YT.Player && !ytPlayerRef.current) {
-        ytPlayerRef.current = new window.YT.Player('yt-audio-player', {
-          height: '1',
-          width: '1',
-          videoId: YOUTUBE_VIDEO_ID,
-          playerVars: {
-            autoplay: 0,
-            loop: 1,
-            playlist: YOUTUBE_VIDEO_ID,
-            controls: 0,
-            disablekb: 1,
-            modestbranding: 1,
-            rel: 0
-          },
-          events: {
-            onReady: () => setPlayerReady(true),
-            onStateChange: (event) => {
-              if (event.data === window.YT.PlayerState.ENDED) {
-                ytPlayerRef.current.playVideo();
-              }
-              if (event.data === window.YT.PlayerState.PLAYING) {
-                setIsPlaying(true);
-              }
-              if (event.data === window.YT.PlayerState.PAUSED) {
-                setIsPlaying(false);
-              }
-            }
-          }
-        });
-      }
-    };
-
-    // Check if API already loaded
-    if (window.YT && window.YT.Player) {
-      initPlayer();
-    } else {
-      window.onYouTubeIframeAPIReady = initPlayer;
-    }
-
-    return () => {
-      if (ytPlayerRef.current && ytPlayerRef.current.destroy) {
-        ytPlayerRef.current.destroy();
-      }
-    };
-  }, []);
-
-  const handleMouseMove = (e) => {
-    if (playerRef.current) {
-      const rect = playerRef.current.getBoundingClientRect();
-      setCursorPos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
 
   const togglePlay = () => {
-    if (ytPlayerRef.current && playerReady) {
-      if (isPlaying) {
-        ytPlayerRef.current.pauseVideo();
-      } else {
-        ytPlayerRef.current.playVideo();
-      }
+    if (!isPlaying) {
+      // Open YouTube video in a new tab since embedding is disabled for this video
+      window.open('https://youtu.be/zGHkStEYC6M', '_blank');
+      setIsPlaying(true);
+      // Reset after a few seconds
+      setTimeout(() => setIsPlaying(false), 3000);
     }
   };
 
   return (
-    <>
-      {/* Hidden YouTube Player Container */}
-      <div style={{ 
-        position: 'fixed', 
-        top: '-9999px', 
-        left: '-9999px',
-        width: '1px',
-        height: '1px',
-        overflow: 'hidden',
-        opacity: 0,
-        pointerEvents: 'none'
-      }}>
-        <div id="yt-audio-player"></div>
-      </div>
-
-      <div
-        ref={playerRef}
-        data-testid="music-player"
-        className="fixed bottom-8 left-8 z-50"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onMouseMove={handleMouseMove}
-        style={{ cursor: 'none' }}
-      >
-        {/* Custom cursor - only shows when hovering */}
-        {isHovered && (
-          <div
-            className="pointer-events-none absolute z-50 transition-transform duration-75"
-            style={{
-              left: cursorPos.x - 24,
-              top: cursorPos.y - 24,
-              width: '48px',
-              height: '48px'
-            }}
-          >
-            <div className="w-full h-full rounded-full border-2 border-[#D4AF37] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-              {isPlaying ? (
-                <Pause size={16} className="text-[#D4AF37]" />
-              ) : (
-                <Play size={16} className="text-[#D4AF37] ml-0.5" />
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Music Player Button */}
-        <button
-          data-testid="music-player-btn"
-          onClick={togglePlay}
-          className="flex items-center gap-3 bg-[#0A0A0A] hover:bg-[#1A1A1A] border border-white/10 px-5 py-3 transition-all duration-300 group"
-          style={{ cursor: 'none' }}
-        >
-          {/* Play/Pause Icon */}
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isPlaying ? 'bg-[#D4AF37]' : 'border-2 border-[#D4AF37]'}`}>
-            {isPlaying ? (
-              <Pause size={14} className="text-black" />
-            ) : (
-              <Play size={14} className="text-[#D4AF37] ml-0.5" />
-            )}
-          </div>
-
-          {/* Song Title */}
-          <span className="text-white text-sm font-medium tracking-wide">
-            {isPlaying ? "Now Playing" : "The Vibe"}
-          </span>
-
-          {/* Sound wave animation when playing */}
-          {isPlaying && (
-            <div className="flex items-center gap-0.5 ml-1">
-              <span className="w-0.5 h-3 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-0.5 h-4 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-0.5 h-2 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '300ms' }}></span>
-              <span className="w-0.5 h-5 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '450ms' }}></span>
-            </div>
-          )}
-        </button>
-      </div>
-    </>
+    <button
+      data-testid="music-player-btn"
+      onClick={togglePlay}
+      className={`fixed bottom-8 left-8 w-16 h-16 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform cursor-pointer z-50 ${isPlaying ? 'bg-[#0A0A0A]' : 'bg-[#A51C30]'}`}
+      style={{ borderRadius: '0' }}
+      title="Listen to The Vibe"
+    >
+      {isPlaying ? (
+        <div className="flex items-center gap-0.5">
+          <span className="w-1 h-4 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '0ms' }}></span>
+          <span className="w-1 h-6 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '150ms' }}></span>
+          <span className="w-1 h-3 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '300ms' }}></span>
+          <span className="w-1 h-5 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '450ms' }}></span>
+        </div>
+      ) : (
+        <Music size={28} className="text-white" />
+      )}
+    </button>
   );
 };
 
