@@ -1,0 +1,116 @@
+{
+  "theme": "Light/Dark High-Contrast Hybrid (Editorial Luxury)",
+  "archetype": "Swiss & High-Contrast (Adapted for Harvard Red/Gold)",
+  "brand_name": "5214 JacanaLane.com",
+  "domain": "Real Estate Landing Page",
+  "colors": {
+    "primary": "#A51C30",
+    "primary_description": "Harvard Crimson. Use for major highlights, buttons, and the AI chatbot orb.",
+    "secondary": "#0A0A0A",
+    "secondary_description": "Obsidian Black. Use for stark contrast in dark-mode sections (Agent Profile) and heavy text.",
+    "accent": "#D4AF37",
+    "accent_description": "Metallic Gold. Use sparingly for premium accents, fine borders, and special hover states.",
+    "background_light": "#FAFAFA",
+    "background_light_description": "Crisp Off-White. Main page background to let the red and photos pop.",
+    "background_dark": "#111111",
+    "background_dark_description": "Deep Charcoal/Black. For footer and agent profile section to create cinematic contrast.",
+    "text_dark": "#0A0A0A",
+    "text_light": "#FFFFFF",
+    "border_subtle": "rgba(0, 0, 0, 0.1)",
+    "border_dark": "rgba(255, 255, 255, 0.15)"
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond",
+    "heading_font_fallback": "serif",
+    "body_font": "Outfit",
+    "body_font_fallback": "sans-serif",
+    "rules": {
+      "h1": "text-5xl md:text-6xl tracking-tighter font-medium",
+      "h2": "text-3xl md:text-4xl tracking-tight font-medium",
+      "h3": "text-xl md:text-2xl font-medium",
+      "body": "text-base md:text-lg leading-relaxed text-gray-800 dark:text-gray-200",
+      "labels": "text-xs tracking-[0.2em] uppercase font-bold text-primary"
+    }
+  },
+  "layout_and_spacing": {
+    "philosophy": "Museum Exhibition / Editorial Magazine. Massive negative space. Heavy asymmetry.",
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-24 md:py-32",
+    "grid_system": "Bento Grid Mode A (Tetris Grid) for photo galleries. Strict asymmetrical columns for text.",
+    "border_radius": "rounded-none",
+    "border_radius_explanation": "Zero rounding. Sharp edges to maintain architectural precision and luxury feel. No soft corners."
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#A51C30] text-white hover:bg-[#8A1527] transition-colors duration-300 rounded-none px-8 py-4 font-bold tracking-widest text-sm uppercase",
+      "linkedin": "bg-[#0A0A0A] text-[#D4AF37] hover:bg-[#1A1A1A] border border-[#D4AF37]/30 transition-all duration-300 rounded-none px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
+    },
+    "cards": {
+      "property_features": "bg-white border border-[#A51C30]/20 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+      "glassmorphism": "backdrop-blur-xl bg-white/70 border border-white/40 shadow-sm (Light mode) or backdrop-blur-xl bg-black/60 border border-white/10 (Dark mode)"
+    },
+    "chatbot": {
+      "trigger": "fixed bottom-8 right-8 w-16 h-16 bg-[#A51C30] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform cursor-pointer z-50",
+      "window": "fixed bottom-28 right-8 w-80 md:w-96 backdrop-blur-2xl bg-white/90 border border-[#A51C30]/20 shadow-2xl p-0 flex flex-col overflow-hidden z-50"
+    }
+  },
+  "sections": {
+    "hero": {
+      "layout": "Minimum 90vh height. Asymmetrical split or massive overlapping text.",
+      "visuals": "Hero exterior image taking up 70% of the screen width on the right. Large Cormorant Garamond typography overlapping on the left.",
+      "overlay": "Subtle linear gradient from black/40 to transparent to ensure text readability."
+    },
+    "property_details": {
+      "layout": "Bento Grid for specs (3-bed, 2.5-bath, 1142 sqft, $950k). Stark white background with crisp typography and red accent lines."
+    },
+    "photo_gallery": {
+      "layout": "Masonry or Bento Mode A grid. Images should touch (gap-1 or gap-0) or have massive architectural gaps (gap-8).",
+      "hover_effect": "Images grayscale by default, fade to full color on hover."
+    },
+    "drone_footage": {
+      "layout": "Dark section (#0A0A0A). 'Coming Soon' placeholder.",
+      "visuals": "Cinematic 16:9 black box with gold pulsing text. Credit: 'Drone footage by Leon Mansalud @ayeleon' in tiny tracked-out caps below."
+    },
+    "agent_profile": {
+      "layout": "Dark section (#111111).",
+      "visuals": "Agent headshot on the left, bio on the right. High contrast white and gold text on black. Prominent LinkedIn DM button."
+    }
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.pexels.com/photos/16787444/pexels-photo-16787444.png",
+        "category": "hero_exterior",
+        "description": "Contemporary architecture exterior for the hero section."
+      },
+      {
+        "url": "https://images.pexels.com/photos/8583808/pexels-photo-8583808.jpeg",
+        "category": "interior_living",
+        "description": "Vaulted ceiling living room, modern luxury."
+      },
+      {
+        "url": "https://images.pexels.com/photos/16501663/pexels-photo-16501663.jpeg",
+        "category": "kitchen_granite",
+        "description": "Modern kitchen with granite countertops and stainless steel appliances."
+      },
+      {
+        "url": "https://images.pexels.com/photos/7641843/pexels-photo-7641843.jpeg",
+        "category": "agent_headshot",
+        "description": "Professional confident man in suit representing agent George Toscano."
+      }
+    ]
+  },
+  "testing": {
+    "rules": "All interactive elements must include a data-testid attribute formatted as kebab-case and role-based."
+  },
+  "instructions_to_main_agent": [
+    "Strictly adhere to the #A51C30 Harvard Crimson color for primary CTAs and accents. Avoid maroon.",
+    "Use sharp, rounded-none edges on buttons, cards, and images to create an architectural, luxury feel.",
+    "Implement the AI chatbot as a floating widget. The chat window should use the 'glassmorphism' card style.",
+    "The drone footage section should be a highly aesthetic 'Coming Soon' placeholder featuring a black cinematic container with gold text and the required Leon Mansalud credit.",
+    "The LinkedIn Contact button should be prominently placed in the hero section and the Agent Profile section.",
+    "Install and configure 'lucide-react' for crisp iconography.",
+    "Ensure headings use Cormorant Garamond (add to Google Fonts import) and body uses Outfit.",
+    "All components must be mobile-first. Follow Charlotte Software Engineering standards (clean code, standard tools, visually striking)."
+  ]
+}
