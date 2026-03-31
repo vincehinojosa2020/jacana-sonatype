@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import "@/App.css";
 import axios from "axios";
 import { Button } from "./components/ui/button";
@@ -40,7 +40,10 @@ import {
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Language options with flags (using emoji flags for simplicity and beauty)
+// Language Context
+const LanguageContext = createContext();
+
+// Language options with flags
 const LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇺🇸', greeting: "Hey! Ask me anything about 5214 Jacana Lane." },
   { code: 'es', name: 'Español', flag: '🇪🇸', greeting: "¡Hola! Pregúntame lo que quieras sobre 5214 Jacana Lane." },
@@ -49,6 +52,480 @@ const LANGUAGES = [
   { code: 'fr', name: 'Français', flag: '🇫🇷', greeting: "Bonjour! Posez-moi vos questions sur 5214 Jacana Lane." },
   { code: 'ar', name: 'العربية', flag: '🇸🇦', greeting: "مرحباً! اسألني أي شيء عن 5214 Jacana Lane." }
 ];
+
+// Translations for the entire UI
+const TRANSLATIONS = {
+  en: {
+    // Hero
+    justListed: "Just Listed",
+    sanJose: "San Jose",
+    messageGeorge: "Message George Now",
+    iPickUp: "I Pick Up: 408-603-6603",
+    // Details
+    propertyOverview: "Property Overview",
+    contemporaryLiving: "Contemporary Living",
+    inHeartOfSanJose: "in the Heart of San Jose",
+    moveInReady: "Move-In Ready.",
+    noCompromises: "No Compromises.",
+    bedrooms: "Bedrooms",
+    bathrooms: "Bathrooms",
+    squareFeet: "Square Feet",
+    yearBuilt: "Year Built",
+    stoneFireplace: "Stone Fireplace",
+    cozyGatherings: "Cozy gatherings start here",
+    evReady: "EV Ready",
+    chargeWhileSleep: "Charge while you sleep",
+    centralAC: "Central AC",
+    yearRoundComfort: "Comfort all year round",
+    garage: "Garage",
+    attachedParking: "Attached with extra parking",
+    hoaIncludes: "Utilities, sewer, water—all included. No surprises.",
+    // Gallery
+    seeForYourself: "See For Yourself",
+    everyRoom: "Every Room. Every Detail.",
+    // Mortgage
+    yourInvestment: "Your Investment",
+    whatsMyPayment: "What's My Payment?",
+    seeExactly: "See exactly what you'd pay. No surprises.",
+    downPayment: "Down Payment",
+    interestRate: "Interest Rate",
+    loanTerm: "Loan Term",
+    years: "Years",
+    yourMonthlyPayment: "Your Monthly Payment",
+    perMonth: "per month (including HOA)",
+    principalInterest: "Principal & Interest",
+    hoaDues: "HOA Dues",
+    loanAmount: "Loan Amount",
+    letsMakeItHappen: "Let's Make It Happen",
+    // Drone
+    comingSoon: "Coming Soon",
+    aerialView: "Aerial View",
+    droneLaunching: "Launching soon",
+    droneBy: "Captured by Leon Mansalud",
+    // Agent
+    yourAgent: "Your Agent",
+    agentBio: "20 years in tech. Data is my language. When you work with me, you get someone who actually picks up the phone. No games. No gimmicks. Just results.",
+    letsConnect: "Let's Connect on LinkedIn",
+    callMe: "Call Me",
+    email: "Email",
+    // Marketing
+    marketingHits: "Marketing That Hits Different",
+    streetSigns: "Street Signs.",
+    billboards: "Billboards.",
+    openHouseSwag: "Open House Swag.",
+    forgetBoring: "Forget boring real estate marketing. This is what happens when you bring",
+    madisonAve: "Madison Avenue energy",
+    toSanJose: "to San Jose.",
+    openHouse: "Open House",
+    today: "TODAY",
+    forSale: "For Sale",
+    blocks: "2 Blocks",
+    openHouseReady: "Open House Ready",
+    propertyFlyers: "Property Flyers",
+    stackedOnCounter: "Stacked on the kitchen counter. Take one — or take five for your friends who are still renting.",
+    wantCustom: "Want custom marketing like this?",
+    talkToGT: "Talk to GT Real →",
+    // Platform
+    moreDetails: "More Details",
+    seeFullListing: "See the Full Listing",
+    // Footer
+    getRealGetResults: "Get Real. Get Results.",
+    designBy: "design by",
+    // Chatbot
+    askAnything: "Ask Anything",
+    askAboutProperty: "Ask about the property...",
+  },
+  es: {
+    justListed: "Recién Listado",
+    sanJose: "San José",
+    messageGeorge: "Mensaje a George",
+    iPickUp: "Llámame: 408-603-6603",
+    propertyOverview: "Resumen de la Propiedad",
+    contemporaryLiving: "Vida Contemporánea",
+    inHeartOfSanJose: "en el Corazón de San José",
+    moveInReady: "Listo para Mudarse.",
+    noCompromises: "Sin Compromisos.",
+    bedrooms: "Habitaciones",
+    bathrooms: "Baños",
+    squareFeet: "Pies Cuadrados",
+    yearBuilt: "Año de Construcción",
+    stoneFireplace: "Chimenea de Piedra",
+    cozyGatherings: "Reuniones acogedoras aquí",
+    evReady: "Listo para EV",
+    chargeWhileSleep: "Carga mientras duermes",
+    centralAC: "Aire Central",
+    yearRoundComfort: "Confort todo el año",
+    garage: "Garaje",
+    attachedParking: "Adjunto con estacionamiento extra",
+    hoaIncludes: "Servicios, alcantarillado, agua—todo incluido.",
+    seeForYourself: "Véalo Usted Mismo",
+    everyRoom: "Cada Habitación. Cada Detalle.",
+    yourInvestment: "Su Inversión",
+    whatsMyPayment: "¿Cuál es Mi Pago?",
+    seeExactly: "Vea exactamente lo que pagaría.",
+    downPayment: "Enganche",
+    interestRate: "Tasa de Interés",
+    loanTerm: "Plazo del Préstamo",
+    years: "Años",
+    yourMonthlyPayment: "Su Pago Mensual",
+    perMonth: "por mes (incluyendo HOA)",
+    principalInterest: "Principal e Interés",
+    hoaDues: "Cuotas HOA",
+    loanAmount: "Monto del Préstamo",
+    letsMakeItHappen: "Hagámoslo Realidad",
+    comingSoon: "Próximamente",
+    aerialView: "Vista Aérea",
+    droneLaunching: "Lanzamiento pronto",
+    droneBy: "Capturado por Leon Mansalud",
+    yourAgent: "Tu Agente",
+    agentBio: "20 años en tecnología. Los datos son mi idioma. Cuando trabajas conmigo, obtienes a alguien que realmente contesta el teléfono.",
+    letsConnect: "Conectemos en LinkedIn",
+    callMe: "Llámame",
+    email: "Correo",
+    marketingHits: "Marketing Que Impacta",
+    streetSigns: "Señales.",
+    billboards: "Vallas.",
+    openHouseSwag: "Promocionales.",
+    forgetBoring: "Olvida el marketing aburrido. Esto pasa cuando traes",
+    madisonAve: "energía de Madison Avenue",
+    toSanJose: "a San José.",
+    openHouse: "Casa Abierta",
+    today: "HOY",
+    forSale: "En Venta",
+    blocks: "2 Cuadras",
+    openHouseReady: "Listo para Casa Abierta",
+    propertyFlyers: "Volantes",
+    stackedOnCounter: "Apilados en la cocina. Toma uno — o cinco para tus amigos.",
+    wantCustom: "¿Quieres marketing así?",
+    talkToGT: "Habla con GT Real →",
+    moreDetails: "Más Detalles",
+    seeFullListing: "Ver Listado Completo",
+    getRealGetResults: "Sé Real. Obtén Resultados.",
+    designBy: "diseño por",
+    askAnything: "Pregunta Lo Que Sea",
+    askAboutProperty: "Pregunta sobre la propiedad...",
+  },
+  zh: {
+    justListed: "新上市",
+    sanJose: "圣何塞",
+    messageGeorge: "联系 George",
+    iPickUp: "电话: 408-603-6603",
+    propertyOverview: "房产概览",
+    contemporaryLiving: "现代生活",
+    inHeartOfSanJose: "位于圣何塞中心",
+    moveInReady: "即可入住",
+    noCompromises: "品质保证",
+    bedrooms: "卧室",
+    bathrooms: "浴室",
+    squareFeet: "平方英尺",
+    yearBuilt: "建造年份",
+    stoneFireplace: "石壁炉",
+    cozyGatherings: "温馨聚会的好地方",
+    evReady: "电动车充电",
+    chargeWhileSleep: "睡觉时充电",
+    centralAC: "中央空调",
+    yearRoundComfort: "全年舒适",
+    garage: "车库",
+    attachedParking: "附带额外停车位",
+    hoaIncludes: "包含水电等费用，无额外支出",
+    seeForYourself: "亲眼所见",
+    everyRoom: "每个房间，每个细节",
+    yourInvestment: "您的投资",
+    whatsMyPayment: "我的月供是多少？",
+    seeExactly: "精确计算您的付款",
+    downPayment: "首付",
+    interestRate: "利率",
+    loanTerm: "贷款期限",
+    years: "年",
+    yourMonthlyPayment: "您的月付款",
+    perMonth: "每月（含HOA）",
+    principalInterest: "本金和利息",
+    hoaDues: "HOA费用",
+    loanAmount: "贷款金额",
+    letsMakeItHappen: "让我们实现它",
+    comingSoon: "即将推出",
+    aerialView: "航拍视角",
+    droneLaunching: "即将发布",
+    droneBy: "由 Leon Mansalud 拍摄",
+    yourAgent: "您的经纪人",
+    agentBio: "20年科技经验。数据是我的语言。和我合作，您会得到一个真正接电话的人。",
+    letsConnect: "在LinkedIn联系",
+    callMe: "打电话",
+    email: "邮件",
+    marketingHits: "与众不同的营销",
+    streetSigns: "街头标牌",
+    billboards: "广告牌",
+    openHouseSwag: "开放日物料",
+    forgetBoring: "忘掉无聊的房产营销。这就是",
+    madisonAve: "麦迪逊大道能量",
+    toSanJose: "来到圣何塞",
+    openHouse: "开放参观",
+    today: "今天",
+    forSale: "出售中",
+    blocks: "2个街区",
+    openHouseReady: "开放日准备就绪",
+    propertyFlyers: "房产传单",
+    stackedOnCounter: "放在厨房台面上。拿一张——或者给朋友拿五张。",
+    wantCustom: "想要这样的营销吗？",
+    talkToGT: "联系 GT Real →",
+    moreDetails: "更多详情",
+    seeFullListing: "查看完整列表",
+    getRealGetResults: "真实可靠，成果显著",
+    designBy: "设计",
+    askAnything: "随便问",
+    askAboutProperty: "询问房产信息...",
+  },
+  vi: {
+    justListed: "Mới Đăng",
+    sanJose: "San Jose",
+    messageGeorge: "Nhắn Tin George",
+    iPickUp: "Gọi: 408-603-6603",
+    propertyOverview: "Tổng Quan Bất Động Sản",
+    contemporaryLiving: "Cuộc Sống Hiện Đại",
+    inHeartOfSanJose: "tại Trung Tâm San Jose",
+    moveInReady: "Sẵn Sàng Dọn Vào",
+    noCompromises: "Không Thỏa Hiệp",
+    bedrooms: "Phòng Ngủ",
+    bathrooms: "Phòng Tắm",
+    squareFeet: "Feet Vuông",
+    yearBuilt: "Năm Xây",
+    stoneFireplace: "Lò Sưởi Đá",
+    cozyGatherings: "Nơi sum họp ấm cúng",
+    evReady: "Sạc Xe Điện",
+    chargeWhileSleep: "Sạc khi ngủ",
+    centralAC: "Điều Hòa Trung Tâm",
+    yearRoundComfort: "Thoải mái quanh năm",
+    garage: "Nhà Xe",
+    attachedParking: "Kèm chỗ đậu xe",
+    hoaIncludes: "Bao gồm điện nước—không phí ẩn",
+    seeForYourself: "Tự Mình Xem",
+    everyRoom: "Mọi Phòng. Mọi Chi Tiết.",
+    yourInvestment: "Khoản Đầu Tư",
+    whatsMyPayment: "Thanh Toán Hàng Tháng?",
+    seeExactly: "Xem chính xác số tiền bạn trả",
+    downPayment: "Tiền Đặt Cọc",
+    interestRate: "Lãi Suất",
+    loanTerm: "Kỳ Hạn Vay",
+    years: "Năm",
+    yourMonthlyPayment: "Thanh Toán Hàng Tháng",
+    perMonth: "mỗi tháng (gồm HOA)",
+    principalInterest: "Gốc & Lãi",
+    hoaDues: "Phí HOA",
+    loanAmount: "Số Tiền Vay",
+    letsMakeItHappen: "Hãy Thực Hiện",
+    comingSoon: "Sắp Ra Mắt",
+    aerialView: "Góc Nhìn Trên Cao",
+    droneLaunching: "Sắp phát hành",
+    droneBy: "Quay bởi Leon Mansalud",
+    yourAgent: "Đại Lý Của Bạn",
+    agentBio: "20 năm trong công nghệ. Dữ liệu là ngôn ngữ của tôi. Khi làm việc với tôi, bạn có người thực sự nghe máy.",
+    letsConnect: "Kết Nối LinkedIn",
+    callMe: "Gọi",
+    email: "Email",
+    marketingHits: "Marketing Khác Biệt",
+    streetSigns: "Biển Báo",
+    billboards: "Bảng Quảng Cáo",
+    openHouseSwag: "Vật Phẩm Open House",
+    forgetBoring: "Quên marketing nhàm chán. Đây là khi",
+    madisonAve: "năng lượng Madison Avenue",
+    toSanJose: "đến San Jose",
+    openHouse: "Open House",
+    today: "HÔM NAY",
+    forSale: "Đang Bán",
+    blocks: "2 Block",
+    openHouseReady: "Sẵn Sàng Open House",
+    propertyFlyers: "Tờ Rơi",
+    stackedOnCounter: "Xếp trên quầy bếp. Lấy một tờ — hoặc năm tờ cho bạn bè.",
+    wantCustom: "Muốn marketing như này?",
+    talkToGT: "Liên hệ GT Real →",
+    moreDetails: "Chi Tiết Thêm",
+    seeFullListing: "Xem Đầy Đủ",
+    getRealGetResults: "Thật Sự. Kết Quả.",
+    designBy: "thiết kế bởi",
+    askAnything: "Hỏi Bất Cứ Điều Gì",
+    askAboutProperty: "Hỏi về bất động sản...",
+  },
+  fr: {
+    justListed: "Nouvelle Annonce",
+    sanJose: "San José",
+    messageGeorge: "Contacter George",
+    iPickUp: "Appelez: 408-603-6603",
+    propertyOverview: "Aperçu de la Propriété",
+    contemporaryLiving: "Vie Contemporaine",
+    inHeartOfSanJose: "au Cœur de San José",
+    moveInReady: "Prêt à Emménager",
+    noCompromises: "Sans Compromis",
+    bedrooms: "Chambres",
+    bathrooms: "Salles de Bain",
+    squareFeet: "Pieds Carrés",
+    yearBuilt: "Année de Construction",
+    stoneFireplace: "Cheminée en Pierre",
+    cozyGatherings: "Pour des réunions chaleureuses",
+    evReady: "Prêt pour VE",
+    chargeWhileSleep: "Rechargez en dormant",
+    centralAC: "Climatisation Centrale",
+    yearRoundComfort: "Confort toute l'année",
+    garage: "Garage",
+    attachedParking: "Avec stationnement supplémentaire",
+    hoaIncludes: "Services inclus—pas de surprises",
+    seeForYourself: "Voyez Par Vous-Même",
+    everyRoom: "Chaque Pièce. Chaque Détail.",
+    yourInvestment: "Votre Investissement",
+    whatsMyPayment: "Quel Est Mon Paiement?",
+    seeExactly: "Calculez exactement ce que vous paierez",
+    downPayment: "Acompte",
+    interestRate: "Taux d'Intérêt",
+    loanTerm: "Durée du Prêt",
+    years: "Ans",
+    yourMonthlyPayment: "Votre Paiement Mensuel",
+    perMonth: "par mois (HOA inclus)",
+    principalInterest: "Principal et Intérêts",
+    hoaDues: "Frais HOA",
+    loanAmount: "Montant du Prêt",
+    letsMakeItHappen: "Faisons-le",
+    comingSoon: "Bientôt Disponible",
+    aerialView: "Vue Aérienne",
+    droneLaunching: "Lancement bientôt",
+    droneBy: "Capturé par Leon Mansalud",
+    yourAgent: "Votre Agent",
+    agentBio: "20 ans dans la tech. Les données sont mon langage. Avec moi, vous avez quelqu'un qui répond vraiment au téléphone.",
+    letsConnect: "Connectons-nous sur LinkedIn",
+    callMe: "Appelez",
+    email: "Email",
+    marketingHits: "Marketing Qui Frappe",
+    streetSigns: "Panneaux",
+    billboards: "Affiches",
+    openHouseSwag: "Matériel Open House",
+    forgetBoring: "Oubliez le marketing ennuyeux. Voici ce qui arrive quand",
+    madisonAve: "l'énergie de Madison Avenue",
+    toSanJose: "arrive à San José",
+    openHouse: "Portes Ouvertes",
+    today: "AUJOURD'HUI",
+    forSale: "À Vendre",
+    blocks: "2 Rues",
+    openHouseReady: "Prêt pour Portes Ouvertes",
+    propertyFlyers: "Dépliants",
+    stackedOnCounter: "Empilés sur le comptoir. Prenez-en un — ou cinq pour vos amis.",
+    wantCustom: "Vous voulez ce marketing?",
+    talkToGT: "Parlez à GT Real →",
+    moreDetails: "Plus de Détails",
+    seeFullListing: "Voir l'Annonce Complète",
+    getRealGetResults: "Soyez Réel. Obtenez des Résultats.",
+    designBy: "design par",
+    askAnything: "Demandez N'importe Quoi",
+    askAboutProperty: "Posez vos questions...",
+  },
+  ar: {
+    justListed: "مدرج حديثاً",
+    sanJose: "سان خوسيه",
+    messageGeorge: "راسل جورج",
+    iPickUp: "اتصل: 408-603-6603",
+    propertyOverview: "نظرة عامة على العقار",
+    contemporaryLiving: "حياة عصرية",
+    inHeartOfSanJose: "في قلب سان خوسيه",
+    moveInReady: "جاهز للسكن",
+    noCompromises: "بدون تنازلات",
+    bedrooms: "غرف نوم",
+    bathrooms: "حمامات",
+    squareFeet: "قدم مربع",
+    yearBuilt: "سنة البناء",
+    stoneFireplace: "مدفأة حجرية",
+    cozyGatherings: "للتجمعات الدافئة",
+    evReady: "شحن سيارة كهربائية",
+    chargeWhileSleep: "اشحن أثناء النوم",
+    centralAC: "تكييف مركزي",
+    yearRoundComfort: "راحة على مدار السنة",
+    garage: "مرآب",
+    attachedParking: "مع موقف إضافي",
+    hoaIncludes: "يشمل المرافق—بدون مفاجآت",
+    seeForYourself: "شاهد بنفسك",
+    everyRoom: "كل غرفة. كل تفصيل.",
+    yourInvestment: "استثمارك",
+    whatsMyPayment: "كم دفعتي؟",
+    seeExactly: "احسب ما ستدفعه بالضبط",
+    downPayment: "الدفعة الأولى",
+    interestRate: "سعر الفائدة",
+    loanTerm: "مدة القرض",
+    years: "سنة",
+    yourMonthlyPayment: "دفعتك الشهرية",
+    perMonth: "شهرياً (شامل HOA)",
+    principalInterest: "الأصل والفائدة",
+    hoaDues: "رسوم HOA",
+    loanAmount: "مبلغ القرض",
+    letsMakeItHappen: "لنحقق ذلك",
+    comingSoon: "قريباً",
+    aerialView: "منظر جوي",
+    droneLaunching: "قريباً",
+    droneBy: "تصوير ليون مانسالود",
+    yourAgent: "وكيلك",
+    agentBio: "20 عاماً في التقنية. البيانات هي لغتي. معي، ستجد شخصاً يرد على الهاتف فعلاً.",
+    letsConnect: "تواصل على LinkedIn",
+    callMe: "اتصل",
+    email: "بريد",
+    marketingHits: "تسويق مختلف",
+    streetSigns: "لافتات",
+    billboards: "لوحات إعلانية",
+    openHouseSwag: "مواد البيت المفتوح",
+    forgetBoring: "انسَ التسويق الممل. هذا ما يحدث عندما تجلب",
+    madisonAve: "طاقة ماديسون أفينيو",
+    toSanJose: "إلى سان خوسيه",
+    openHouse: "بيت مفتوح",
+    today: "اليوم",
+    forSale: "للبيع",
+    blocks: "شارعين",
+    openHouseReady: "جاهز للبيت المفتوح",
+    propertyFlyers: "منشورات",
+    stackedOnCounter: "مكدسة على الطاولة. خذ واحدة — أو خمس لأصدقائك.",
+    wantCustom: "تريد تسويقاً كهذا؟",
+    talkToGT: "تحدث مع GT Real ←",
+    moreDetails: "المزيد",
+    seeFullListing: "شاهد القائمة الكاملة",
+    getRealGetResults: "كن حقيقياً. احصل على نتائج.",
+    designBy: "تصميم",
+    askAnything: "اسأل أي شيء",
+    askAboutProperty: "اسأل عن العقار...",
+  }
+};
+
+// Custom hook for translations
+const useTranslation = () => {
+  const { language } = useContext(LanguageContext);
+  const t = (key) => TRANSLATIONS[language.code]?.[key] || TRANSLATIONS.en[key] || key;
+  return { t, language, isRTL: language.code === 'ar' };
+};
+
+// Language Provider with top flag bar
+const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState(LANGUAGES[0]);
+  
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage }}>
+      {/* Top Language Flag Bar */}
+      <div data-testid="language-bar" className="fixed top-0 left-0 right-0 z-[60] bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-[#D4AF37]/20" style={{ direction: 'ltr' }}>
+        <div className="flex items-center justify-center gap-1 py-2 px-4">
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              data-testid={`lang-flag-${lang.code}`}
+              onClick={() => setLanguage(lang)}
+              className={`text-xl sm:text-2xl px-1.5 sm:px-2 py-1 transition-all duration-200 hover:scale-125 cursor-pointer ${
+                language.code === lang.code 
+                  ? 'scale-125 opacity-100 drop-shadow-lg' 
+                  : 'opacity-40 hover:opacity-80'
+              }`}
+              title={lang.name}
+            >
+              {lang.flag}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div style={{ paddingTop: '48px' }} dir={language.code === 'ar' ? 'rtl' : 'ltr'}>
+        {children}
+      </div>
+    </LanguageContext.Provider>
+  );
+};
 
 // Actual property images from uploaded assets + hero image we're keeping
 const PROPERTY_IMAGES = [
@@ -161,6 +638,7 @@ const MusicPlayer = () => {
 
 // Mortgage Calculator Component
 const MortgageCalculator = () => {
+  const { t } = useTranslation();
   const [homePrice] = useState(PROPERTY_DATA.price);
   const [downPayment, setDownPayment] = useState(190000); // 20%
   const [interestRate, setInterestRate] = useState(6.5);
@@ -188,13 +666,13 @@ const MortgageCalculator = () => {
     <section data-testid="mortgage-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto">
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
-          Your Investment
+          {t('yourInvestment')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-4">
-          What's My Payment?
+          {t('whatsMyPayment')}
         </h2>
         <p className="text-gray-600 mb-12 font-body">
-          See exactly what you'd pay. No surprises.
+          {t('seeExactly')}
         </p>
 
         <div className="grid md:grid-cols-2 gap-12">
@@ -203,7 +681,7 @@ const MortgageCalculator = () => {
             {/* Down Payment */}
             <div>
               <div className="flex justify-between mb-3">
-                <label className="text-sm font-medium text-gray-700">Down Payment</label>
+                <label className="text-sm font-medium text-gray-700">{t('downPayment')}</label>
                 <span className="text-sm font-bold text-[#A51C30]">
                   ${downPayment.toLocaleString()} ({downPaymentPercent}%)
                 </span>
@@ -226,7 +704,7 @@ const MortgageCalculator = () => {
             {/* Interest Rate */}
             <div>
               <div className="flex justify-between mb-3">
-                <label className="text-sm font-medium text-gray-700">Interest Rate</label>
+                <label className="text-sm font-medium text-gray-700">{t('interestRate')}</label>
                 <span className="text-sm font-bold text-[#A51C30]">{interestRate}%</span>
               </div>
               <Slider
@@ -246,7 +724,7 @@ const MortgageCalculator = () => {
 
             {/* Loan Term */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-3 block">Loan Term</label>
+              <label className="text-sm font-medium text-gray-700 mb-3 block">{t('loanTerm')}</label>
               <div className="flex gap-4">
                 {[15, 20, 30].map((term) => (
                   <button
@@ -259,7 +737,7 @@ const MortgageCalculator = () => {
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
-                    {term} Years
+                    {term} {t('years')}
                   </button>
                 ))}
               </div>
@@ -270,25 +748,25 @@ const MortgageCalculator = () => {
           <div className="bg-[#0A0A0A] p-8 text-white">
             <div className="flex items-center gap-2 mb-6">
               <Calculator className="text-[#D4AF37]" size={24} />
-              <span className="text-sm uppercase tracking-wider text-white/60">Your Monthly Payment</span>
+              <span className="text-sm uppercase tracking-wider text-white/60">{t('yourMonthlyPayment')}</span>
             </div>
             
             <p className="text-5xl font-heading font-semibold text-white mb-2">
               ${Math.round(totalMonthly).toLocaleString()}
             </p>
-            <p className="text-sm text-white/60 mb-8">per month (including HOA)</p>
+            <p className="text-sm text-white/60 mb-8">{t('perMonth')}</p>
 
             <div className="space-y-4 pt-6 border-t border-white/10">
               <div className="flex justify-between">
-                <span className="text-white/60">Principal & Interest</span>
+                <span className="text-white/60">{t('principalInterest')}</span>
                 <span className="font-medium">${Math.round(monthlyPayment).toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white/60">HOA Dues</span>
+                <span className="text-white/60">{t('hoaDues')}</span>
                 <span className="font-medium">${monthlyHOA}</span>
               </div>
               <div className="flex justify-between pt-4 border-t border-white/10">
-                <span className="text-white/60">Loan Amount</span>
+                <span className="text-white/60">{t('loanAmount')}</span>
                 <span className="font-medium">${(homePrice - downPayment).toLocaleString()}</span>
               </div>
             </div>
@@ -299,7 +777,7 @@ const MortgageCalculator = () => {
               className="mt-8 w-full bg-[#A51C30] hover:bg-[#8A1527] text-white py-4 flex items-center justify-center gap-2 font-bold uppercase text-sm transition-colors"
             >
               <Phone size={18} />
-              Let's Make It Happen
+              {t('letsMakeItHappen')}
             </a>
           </div>
         </div>
@@ -310,6 +788,8 @@ const MortgageCalculator = () => {
 
 // Chatbot Component with Language Selection and Voice Input
 const Chatbot = () => {
+  const { language: globalLang, setLanguage: setGlobalLang } = useContext(LanguageContext);
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState(LANGUAGES[0]);
   const [showLangPicker, setShowLangPicker] = useState(false);
@@ -325,6 +805,17 @@ const Chatbot = () => {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  // Sync chatbot language with global language when global changes
+  useEffect(() => {
+    if (globalLang && globalLang.code !== selectedLang.code) {
+      const matchedLang = LANGUAGES.find(l => l.code === globalLang.code);
+      if (matchedLang) {
+        setSelectedLang(matchedLang);
+        setMessages([{ role: "assistant", content: matchedLang.greeting }]);
+      }
+    }
+  }, [globalLang]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -377,6 +868,8 @@ const Chatbot = () => {
     setSelectedLang(lang);
     setShowLangPicker(false);
     setMessages([{ role: "assistant", content: lang.greeting }]);
+    // Sync with global language
+    if (setGlobalLang) setGlobalLang(lang);
   };
 
   const sendMessage = async () => {
@@ -445,7 +938,7 @@ const Chatbot = () => {
               <div className="flex items-center gap-3">
                 <Home size={20} />
                 <div>
-                  <h3 className="font-heading text-lg font-semibold">Ask Anything</h3>
+                  <h3 className="font-heading text-lg font-semibold">{t('askAnything')}</h3>
                   <p className="text-xs opacity-80">5214 Jacana Lane</p>
                 </div>
               </div>
@@ -541,7 +1034,7 @@ const Chatbot = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={selectedLang.code === 'ar' ? "...اسأل عن العقار" : "Ask about the property..."}
+                placeholder={t('askAboutProperty')}
                 className="flex-1 border-[#A51C30]/30 focus:border-[#A51C30] focus:ring-[#A51C30]"
                 style={{ borderRadius: '0', direction: selectedLang.code === 'ar' ? 'rtl' : 'ltr' }}
               />
@@ -564,6 +1057,7 @@ const Chatbot = () => {
 
 // Hero Section
 const HeroSection = () => {
+  const { t } = useTranslation();
   const scrollToDetails = () => {
     document.getElementById('details')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -585,7 +1079,7 @@ const HeroSection = () => {
         <div className="max-w-3xl">
           {/* Label */}
           <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#D4AF37] mb-4">
-            Just Listed • San Jose •{" "}
+            {t('justListed')} • {t('sanJose')} •{" "}
             <a href="https://gtreal.io" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
               GT Real
             </a>
@@ -611,15 +1105,15 @@ const HeroSection = () => {
             <div className="flex gap-6">
               <div className="text-center">
                 <p className="text-2xl font-heading font-semibold text-white">{PROPERTY_DATA.beds}</p>
-                <p className="text-xs uppercase tracking-wider text-white/60">Beds</p>
+                <p className="text-xs uppercase tracking-wider text-white/60">{t('bedrooms')}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-heading font-semibold text-white">{PROPERTY_DATA.baths}</p>
-                <p className="text-xs uppercase tracking-wider text-white/60">Baths</p>
+                <p className="text-xs uppercase tracking-wider text-white/60">{t('bathrooms')}</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-heading font-semibold text-white">{PROPERTY_DATA.sqft}</p>
-                <p className="text-xs uppercase tracking-wider text-white/60">Sq Ft</p>
+                <p className="text-xs uppercase tracking-wider text-white/60">{t('squareFeet')}</p>
               </div>
             </div>
           </div>
@@ -634,7 +1128,7 @@ const HeroSection = () => {
               className="linkedin-btn relative overflow-hidden bg-[#0A0A0A] text-[#D4AF37] hover:bg-[#1A1A1A] border border-[#D4AF37]/30 transition-all duration-300 px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
             >
               <Linkedin size={20} />
-              Message George Now
+              {t('messageGeorge')}
             </a>
             <a
               data-testid="hero-call-btn"
@@ -642,7 +1136,7 @@ const HeroSection = () => {
               className="bg-[#A51C30] text-white hover:bg-[#8A1527] transition-colors duration-300 px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
             >
               <Phone size={20} />
-              I Pick Up: 408-603-6603
+              {t('iPickUp')}
             </a>
           </div>
         </div>
@@ -661,15 +1155,24 @@ const HeroSection = () => {
 
 // Property Details Section
 const DetailsSection = () => {
+  const { t } = useTranslation();
+  
+  const FEATURE_KEYS = [
+    { icon: Flame, labelKey: 'stoneFireplace', descKey: 'cozyGatherings' },
+    { icon: Zap, labelKey: 'evReady', descKey: 'chargeWhileSleep' },
+    { icon: Thermometer, labelKey: 'centralAC', descKey: 'yearRoundComfort' },
+    { icon: Car, labelKey: 'garage', descKey: 'attachedParking' }
+  ];
+
   return (
     <section id="details" data-testid="details-section" className="bg-[#FAFAFA] py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
-          The Details
+          {t('propertyOverview')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-16">
-          Move-In Ready.<br />No Compromises.
+          {t('moveInReady')}<br />{t('noCompromises')}
         </h2>
 
         {/* Stats Grid */}
@@ -677,32 +1180,32 @@ const DetailsSection = () => {
           <div className="bg-white border border-[#A51C30]/10 p-6 feature-card">
             <Bed className="text-[#A51C30] mb-4" size={28} />
             <p className="text-3xl font-heading font-semibold text-[#0A0A0A] stat-number">{PROPERTY_DATA.beds}</p>
-            <p className="text-sm text-gray-500 uppercase tracking-wider">Bedrooms</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">{t('bedrooms')}</p>
           </div>
           <div className="bg-white border border-[#A51C30]/10 p-6 feature-card">
             <Bath className="text-[#A51C30] mb-4" size={28} />
             <p className="text-3xl font-heading font-semibold text-[#0A0A0A] stat-number">{PROPERTY_DATA.baths}</p>
-            <p className="text-sm text-gray-500 uppercase tracking-wider">Bathrooms</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">{t('bathrooms')}</p>
           </div>
           <div className="bg-white border border-[#A51C30]/10 p-6 feature-card">
             <Square className="text-[#A51C30] mb-4" size={28} />
             <p className="text-3xl font-heading font-semibold text-[#0A0A0A] stat-number">{PROPERTY_DATA.sqft}</p>
-            <p className="text-sm text-gray-500 uppercase tracking-wider">Square Feet</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">{t('squareFeet')}</p>
           </div>
           <div className="bg-white border border-[#A51C30]/10 p-6 feature-card">
             <Calendar className="text-[#A51C30] mb-4" size={28} />
             <p className="text-3xl font-heading font-semibold text-[#0A0A0A] stat-number">{PROPERTY_DATA.yearBuilt}</p>
-            <p className="text-sm text-gray-500 uppercase tracking-wider">Year Built</p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">{t('yearBuilt')}</p>
           </div>
         </div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PROPERTY_DATA.features.map((feature, idx) => (
+          {FEATURE_KEYS.map((feature, idx) => (
             <div key={idx} className="bg-white border border-[#A51C30]/10 p-6 feature-card">
               <feature.icon className="text-[#D4AF37] mb-4" size={24} />
-              <h3 className="font-heading text-xl font-medium text-[#0A0A0A] mb-2">{feature.label}</h3>
-              <p className="text-sm text-gray-600 font-body">{feature.desc}</p>
+              <h3 className="font-heading text-xl font-medium text-[#0A0A0A] mb-2">{t(feature.labelKey)}</h3>
+              <p className="text-sm text-gray-600 font-body">{t(feature.descKey)}</p>
             </div>
           ))}
         </div>
@@ -713,7 +1216,7 @@ const DetailsSection = () => {
             <DollarSign className="text-[#A51C30]" size={24} />
             <div>
               <p className="font-medium text-[#0A0A0A]">HOA: {PROPERTY_DATA.hoa}</p>
-              <p className="text-sm text-gray-600">Utilities, sewer, water—all included. No surprises.</p>
+              <p className="text-sm text-gray-600">{t('hoaIncludes')}</p>
             </div>
           </div>
         </div>
@@ -724,15 +1227,16 @@ const DetailsSection = () => {
 
 // Photo Gallery Section - with all actual property photos
 const GallerySection = () => {
+  const { t } = useTranslation();
   return (
     <section data-testid="gallery-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Section Label */}
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4">
-          See For Yourself
+          {t('seeForYourself')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-12">
-          Every Room. Every Detail.
+          {t('everyRoom')}
         </h2>
 
         {/* Bento Grid - now with 5 images */}
@@ -786,15 +1290,16 @@ const GallerySection = () => {
 
 // Drone Footage Section
 const DroneSection = () => {
+  const { t } = useTranslation();
   return (
     <section data-testid="drone-section" className="bg-[#0A0A0A] py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto text-center">
         {/* Section Label */}
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#D4AF37] mb-4">
-          Coming Soon
+          {t('comingSoon')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-white tracking-tight mb-12">
-          Aerial View
+          {t('aerialView')}
         </h2>
 
         {/* Video Placeholder */}
@@ -806,13 +1311,13 @@ const DroneSection = () => {
             <p className="pulse-text text-[#D4AF37] font-heading text-2xl md:text-3xl font-medium tracking-wider uppercase">
               Drone Footage
             </p>
-            <p className="text-white/40 text-sm mt-2">Launching soon</p>
+            <p className="text-white/40 text-sm mt-2">{t('droneLaunching')}</p>
           </div>
         </div>
 
         {/* Credit */}
         <p className="mt-8 text-xs tracking-[0.2em] uppercase text-white/40">
-          Captured by Leon Mansalud{" "}
+          {t('droneBy')}{" "}
           <a 
             href="https://www.instagram.com/ayeleon" 
             target="_blank" 
@@ -829,6 +1334,7 @@ const DroneSection = () => {
 
 // Agent Profile Section - with George's actual headshot
 const AgentSection = () => {
+  const { t } = useTranslation();
   return (
     <section data-testid="agent-section" className="bg-[#111111] py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
@@ -856,7 +1362,7 @@ const AgentSection = () => {
           {/* Agent Info */}
           <div className="order-1 md:order-2">
             <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#D4AF37] mb-4">
-              Your Agent
+              {t('yourAgent')}
             </p>
             <h2 className="font-heading text-4xl md:text-5xl font-medium text-white tracking-tight mb-4">
               George Toscano
@@ -866,9 +1372,7 @@ const AgentSection = () => {
             </p>
 
             <p className="font-body text-lg text-white/80 leading-relaxed mb-8">
-              20 years in tech. Data is my language. When you work with me, 
-              you get someone who actually picks up the phone. No games. No gimmicks. 
-              Just results.
+              {t('agentBio')}
             </p>
 
             {/* Contact Buttons */}
@@ -881,7 +1385,7 @@ const AgentSection = () => {
                 className="linkedin-btn relative overflow-hidden w-full bg-[#0A0A0A] text-[#D4AF37] hover:bg-[#1A1A1A] border border-[#D4AF37]/30 transition-all duration-300 px-8 py-4 flex items-center justify-center gap-3 font-bold uppercase text-sm"
               >
                 <Linkedin size={20} />
-                Let's Connect on LinkedIn
+                {t('letsConnect')}
               </a>
               <div className="grid grid-cols-2 gap-4">
                 <a
@@ -890,7 +1394,7 @@ const AgentSection = () => {
                   className="bg-[#A51C30] text-white hover:bg-[#8A1527] transition-colors duration-300 px-6 py-4 flex items-center justify-center gap-2 font-bold uppercase text-sm"
                 >
                   <Phone size={18} />
-                  Call Me
+                  {t('callMe')}
                 </a>
                 <a
                   data-testid="agent-email-btn"
@@ -898,7 +1402,7 @@ const AgentSection = () => {
                   className="bg-white/10 text-white hover:bg-white/20 transition-colors duration-300 px-6 py-4 flex items-center justify-center gap-2 font-bold uppercase text-sm"
                 >
                   <Mail size={18} />
-                  Email
+                  {t('email')}
                 </a>
               </div>
             </div>
@@ -911,6 +1415,7 @@ const AgentSection = () => {
 
 // Marketing Materials Section - Actual Billboard & Sign Mockups
 const MarketingSection = () => {
+  const { t } = useTranslation();
   return (
     <section data-testid="marketing-section" className="bg-[#0A0A0A] py-24 md:py-32 px-6 md:px-12 lg:px-24 overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -918,17 +1423,17 @@ const MarketingSection = () => {
         <div className="text-center mb-16">
           <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#D4AF37] mb-4 flex items-center justify-center gap-2">
             <Megaphone size={16} />
-            Marketing That Hits Different
+            {t('marketingHits')}
           </p>
           <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-medium text-white tracking-tight mb-6">
-            Street Signs.<br />
-            <span className="text-[#A51C30]">Billboards.</span><br />
-            Open House Swag.
+            {t('streetSigns')}<br />
+            <span className="text-[#A51C30]">{t('billboards')}</span><br />
+            {t('openHouseSwag')}
           </h2>
           <p className="text-white/60 max-w-2xl mx-auto text-lg">
-            Forget boring real estate marketing. This is what happens when you bring 
-            <span className="text-[#D4AF37] font-semibold"> Madison Avenue energy </span> 
-            to San Jose.
+            {t('forgetBoring')}
+            <span className="text-[#D4AF37] font-semibold"> {t('madisonAve')} </span> 
+            {t('toSanJose')}.
           </p>
         </div>
 
@@ -941,7 +1446,7 @@ const MarketingSection = () => {
               <div className="bg-[#A51C30] aspect-[3/1] flex items-center justify-between px-8 md:px-16 relative overflow-hidden">
                 {/* Left side - Text */}
                 <div className="z-10">
-                  <p className="text-white/80 text-sm md:text-lg uppercase tracking-widest mb-2">Just Listed</p>
+                  <p className="text-white/80 text-sm md:text-lg uppercase tracking-widest mb-2">{t('justListed')}</p>
                   <h3 className="font-heading text-3xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
                     5214<br />JACANA
                   </h3>
@@ -951,7 +1456,7 @@ const MarketingSection = () => {
                 {/* Right side - Info */}
                 <div className="text-right z-10">
                   <p className="text-white text-lg md:text-2xl font-bold">3 BED • 2.5 BATH</p>
-                  <p className="text-white/80 text-sm md:text-lg">San Jose, CA</p>
+                  <p className="text-white/80 text-sm md:text-lg">{t('sanJose')}, CA</p>
                   <div className="mt-4 bg-[#D4AF37] text-[#0A0A0A] px-4 py-2 inline-block">
                     <p className="font-bold text-lg md:text-xl">GTREAL.IO</p>
                   </div>
@@ -980,8 +1485,8 @@ const MarketingSection = () => {
             <div className="relative">
               {/* Sign */}
               <div className="bg-[#A51C30] w-64 h-40 flex flex-col items-center justify-center shadow-xl border-4 border-white">
-                <p className="text-white text-xs uppercase tracking-widest">Open House</p>
-                <p className="text-white font-heading text-3xl font-bold">TODAY</p>
+                <p className="text-white text-xs uppercase tracking-widest">{t('openHouse')}</p>
+                <p className="text-white font-heading text-3xl font-bold">{t('today')}</p>
                 <p className="text-[#D4AF37] text-lg font-bold">1PM - 4PM</p>
                 <p className="text-white/80 text-sm mt-1">5214 Jacana Lane</p>
               </div>
@@ -996,7 +1501,7 @@ const MarketingSection = () => {
             <div className="relative">
               {/* Sign */}
               <div className="bg-[#0A0A0A] w-64 h-40 flex flex-col items-center justify-center shadow-xl border-4 border-[#D4AF37]">
-                <p className="text-[#D4AF37] text-xs uppercase tracking-widest">For Sale</p>
+                <p className="text-[#D4AF37] text-xs uppercase tracking-widest">{t('forSale')}</p>
                 <p className="text-white font-heading text-2xl font-bold">$950,000</p>
                 <p className="text-white/60 text-sm">3 Bed • 2.5 Bath</p>
                 <div className="mt-2 bg-[#A51C30] px-3 py-1">
@@ -1006,7 +1511,7 @@ const MarketingSection = () => {
               {/* Stake */}
               <div className="w-2 h-20 bg-gray-400 mx-auto"></div>
             </div>
-            <p className="text-white/30 text-xs mt-2 uppercase tracking-wider">For Sale Sign</p>
+            <p className="text-white/30 text-xs mt-2 uppercase tracking-wider">{t('forSale')} Sign</p>
           </div>
 
           {/* Directional Arrow */}
@@ -1015,9 +1520,9 @@ const MarketingSection = () => {
               {/* Sign */}
               <div className="bg-[#D4AF37] w-64 h-40 flex items-center justify-center shadow-xl relative">
                 <div className="text-center">
-                  <p className="text-[#0A0A0A] font-heading text-2xl font-bold">OPEN</p>
-                  <p className="text-[#0A0A0A] font-heading text-2xl font-bold">HOUSE</p>
-                  <p className="text-[#0A0A0A]/60 text-sm">→ 2 Blocks</p>
+                  <p className="text-[#0A0A0A] font-heading text-2xl font-bold">{t('openHouse').split(' ')[0]}</p>
+                  <p className="text-[#0A0A0A] font-heading text-2xl font-bold">{t('openHouse').split(' ').slice(1).join(' ') || 'HOUSE'}</p>
+                  <p className="text-[#0A0A0A]/60 text-sm">→ {t('blocks')}</p>
                 </div>
                 {/* Arrow shape */}
                 <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#D4AF37] transform rotate-45"></div>
@@ -1046,12 +1551,12 @@ const MarketingSection = () => {
               </div>
               <div className="flex-1 text-[#0A0A0A]">
                 <p className="text-sm font-bold mb-1">3 Bed • 2.5 Bath • 1,142 Sq Ft</p>
-                <p className="text-xs text-gray-600 mb-2">San Jose, CA 95123</p>
+                <p className="text-xs text-gray-600 mb-2">{t('sanJose')}, CA 95123</p>
                 <div className="grid grid-cols-2 gap-1 text-xs mb-2">
-                  <span>✓ Stone Fireplace</span>
-                  <span>✓ EV Ready</span>
-                  <span>✓ Central AC</span>
-                  <span>✓ Garage</span>
+                  <span>✓ {t('stoneFireplace')}</span>
+                  <span>✓ {t('evReady')}</span>
+                  <span>✓ {t('centralAC')}</span>
+                  <span>✓ {t('garage')}</span>
                 </div>
                 <div className="mt-auto border-t pt-2">
                   <p className="text-[#A51C30] font-bold text-sm">George Toscano</p>
@@ -1062,9 +1567,9 @@ const MarketingSection = () => {
           </div>
           
           <div className="text-center md:text-left max-w-sm">
-            <p className="text-[#D4AF37] text-xs uppercase tracking-widest mb-2">Open House Ready</p>
-            <h3 className="text-white font-heading text-2xl font-bold mb-3">Property Flyers</h3>
-            <p className="text-white/60 text-sm">Stacked on the kitchen counter. Take one — or take five for your friends who are still renting.</p>
+            <p className="text-[#D4AF37] text-xs uppercase tracking-widest mb-2">{t('openHouseReady')}</p>
+            <h3 className="text-white font-heading text-2xl font-bold mb-3">{t('propertyFlyers')}</h3>
+            <p className="text-white/60 text-sm">{t('stackedOnCounter')}</p>
           </div>
         </div>
 
@@ -1073,7 +1578,7 @@ const MarketingSection = () => {
           <div className="inline-block bg-[#A51C30] p-1">
             <div className="bg-[#0A0A0A] px-8 py-4">
               <p className="text-[#D4AF37] font-heading text-xl md:text-2xl font-semibold">
-                Want custom marketing like this?
+                {t('wantCustom')}
               </p>
               <a 
                 href="https://gtreal.io" 
@@ -1081,7 +1586,7 @@ const MarketingSection = () => {
                 rel="noopener noreferrer"
                 className="text-white/60 text-sm hover:text-[#D4AF37] transition-colors"
               >
-                Talk to GT Real →
+                {t('talkToGT')}
               </a>
             </div>
           </div>
@@ -1106,14 +1611,15 @@ const MarketingSection = () => {
 
 // Platform Links Section - Zillow and Redfin tiles
 const PlatformLinksSection = () => {
+  const { t } = useTranslation();
   return (
     <section data-testid="platform-links-section" className="bg-[#FAFAFA] py-16 px-6 md:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto">
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 text-center">
-          More Details
+          {t('moreDetails')}
         </p>
         <h2 className="font-heading text-2xl md:text-3xl font-medium text-[#0A0A0A] tracking-tight mb-8 text-center">
-          See the Full Listing
+          {t('seeFullListing')}
         </h2>
         
         <div className="grid grid-cols-2 gap-4">
@@ -1154,6 +1660,7 @@ const PlatformLinksSection = () => {
 
 // Footer with GT Real shoutout and Charlotte design credit
 const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer data-testid="footer" className="bg-[#0A0A0A] py-16 px-6 md:px-12 lg:px-24 border-t border-white/10">
       <div className="max-w-7xl mx-auto">
@@ -1161,7 +1668,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div>
             <p className="font-heading text-2xl text-white mb-1">5214 Jacana Lane</p>
-            <p className="text-sm text-white/40">San Jose, CA 95123</p>
+            <p className="text-sm text-white/40">{t('sanJose')}, CA 95123</p>
           </div>
           
           {/* GT Real - Prominent branding */}
@@ -1178,7 +1685,7 @@ const Footer = () => {
                 </p>
               </div>
               <p className="text-white/40 text-xs uppercase tracking-[0.2em] group-hover:text-[#D4AF37] transition-colors">
-                Get Real. Get Results.
+                {t('getRealGetResults')}
               </p>
             </a>
           </div>
@@ -1201,7 +1708,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-white/20 hover:text-[#D4AF37] transition-colors group"
           >
-            <span className="text-xs uppercase tracking-[0.3em]">design by</span>
+            <span className="text-xs uppercase tracking-[0.3em]">{t('designBy')}</span>
             <span className="text-sm font-medium text-white/40 group-hover:text-[#D4AF37] transition-colors">Charlotte.</span>
           </a>
         </div>
@@ -1213,19 +1720,21 @@ const Footer = () => {
 // Main App
 function App() {
   return (
-    <div className="App min-h-screen bg-[#FAFAFA]">
-      <HeroSection />
-      <DetailsSection />
-      <GallerySection />
-      <MortgageCalculator />
-      <DroneSection />
-      <AgentSection />
-      <MarketingSection />
-      <PlatformLinksSection />
-      <Footer />
-      <MusicPlayer />
-      <Chatbot />
-    </div>
+    <LanguageProvider>
+      <div className="App min-h-screen bg-[#FAFAFA]">
+        <HeroSection />
+        <DetailsSection />
+        <GallerySection />
+        <MortgageCalculator />
+        <DroneSection />
+        <AgentSection />
+        <MarketingSection />
+        <PlatformLinksSection />
+        <Footer />
+        <MusicPlayer />
+        <Chatbot />
+      </div>
+    </LanguageProvider>
   );
 }
 
