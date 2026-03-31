@@ -25,14 +25,16 @@ Create a custom real estate listing website for 5214 Jacana Lane, San Jose, CA w
 ## What's Been Implemented (December 2025)
 - ✅ Hero section with property details, price, stats
 - ✅ Property details section with features (fireplace, EV, AC, garage)
-- ✅ Photo gallery with grayscale-to-color hover effect
+- ✅ Photo gallery with actual property photos + grayscale-to-color hover effect
+- ✅ Mortgage calculator with sliders (down payment, interest rate, loan term)
 - ✅ Drone footage "Coming Soon" section with Leon Mansalud credit
-- ✅ Agent profile section for George Toscano
+- ✅ Agent profile section with George's actual headshot (beautifully formatted)
 - ✅ AI chatbot using GPT-5.2 (Emergent LLM Key)
 - ✅ LinkedIn DM button throughout site
-- ✅ Call/email contact options
+- ✅ Call button "I Pick Up: 408-603-6603" - Frank Luntz style copy
+- ✅ Zillow and Redfin tiles linking to full listing pages
 - ✅ Mobile responsive design
-- ✅ Clean footer without Emergent branding
+- ✅ Footer with "Another GT Real Production" shoutout linking to gtreal.io
 - ✅ Proper OG meta tags for link previews
 
 ## Tech Stack
