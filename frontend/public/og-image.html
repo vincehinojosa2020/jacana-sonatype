@@ -9,219 +9,215 @@
   
   body {
     width: 1200px;
-    height: 630px;
+    height: 1200px;
     overflow: hidden;
-    font-family: 'Outfit', sans-serif;
   }
   
   .card {
     width: 1200px;
-    height: 630px;
+    height: 1200px;
     background: #0A0A0A;
-    display: flex;
     position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Property photo - top half */
+  .photo-section {
+    position: relative;
+    width: 100%;
+    height: 55%;
     overflow: hidden;
   }
   
-  /* Background property image - right side, faded */
-  .bg-image {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 65%;
+  .photo-section img {
+    width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.35;
-    mask-image: linear-gradient(to right, transparent 0%, black 30%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%);
   }
   
-  /* Gold accent line - top */
-  .gold-line-top {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #D4AF37, #A51C30, #D4AF37);
-  }
-  
-  /* Gold accent line - bottom */
-  .gold-line-bottom {
+  /* Gradient fade from photo into dark */
+  .photo-fade {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #D4AF37, #A51C30, #D4AF37);
+    height: 50%;
+    background: linear-gradient(to bottom, transparent, #0A0A0A);
   }
   
-  /* Content */
-  .content {
+  /* Gold accent line */
+  .gold-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37, #B8942E);
+    margin: 0 auto;
     position: relative;
-    z-index: 2;
-    padding: 60px 70px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    width: 100%;
+    z-index: 5;
+    margin-top: -20px;
   }
   
-  /* Top section */
-  .top-label {
+  /* "Just Listed" badge floating on photo */
+  .badge {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    z-index: 5;
+    background: #A51C30;
+    padding: 10px 28px;
+  }
+  
+  .badge p {
     font-family: 'Outfit', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.3em;
+    font-size: 14px;
+    letter-spacing: 0.35em;
     text-transform: uppercase;
-    color: #D4AF37;
+    color: white;
     font-weight: 600;
   }
   
-  /* Middle section */
-  .middle {
+  /* Content section - bottom half */
+  .content {
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
+    text-align: center;
+    padding: 30px 60px 50px;
+    position: relative;
+    z-index: 2;
   }
   
   .address {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 72px;
+    font-size: 82px;
     font-weight: 500;
     color: #FFFFFF;
-    line-height: 1.05;
+    line-height: 1.0;
     letter-spacing: -0.02em;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   
   .city {
     font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.05em;
-    margin-bottom: 28px;
+    font-size: 18px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
   }
   
   .price {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 56px;
+    font-size: 72px;
     font-weight: 600;
     color: #D4AF37;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
   }
   
   .stats {
     font-family: 'Outfit', sans-serif;
     font-size: 18px;
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
+    margin-bottom: 40px;
   }
   
-  .stats span {
-    color: rgba(255,255,255,0.3);
-    margin: 0 10px;
+  .stats .dot {
+    color: #D4AF37;
+    margin: 0 14px;
   }
   
-  /* Bottom section */
-  .bottom {
+  /* Bottom branding bar */
+  .branding {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 24px;
   }
   
-  .agent-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .agent-badge {
+  .brand-badge {
     background: #A51C30;
-    padding: 10px 24px;
-    display: inline-block;
+    padding: 12px 32px;
   }
   
-  .agent-badge p {
+  .brand-badge p {
     font-family: 'Outfit', sans-serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     color: white;
     letter-spacing: 0.15em;
   }
   
+  .brand-separator {
+    width: 1px;
+    height: 30px;
+    background: rgba(255,255,255,0.15);
+  }
+  
   .agent-name {
     font-family: 'Outfit', sans-serif;
-    font-size: 14px;
-    color: rgba(255,255,255,0.4);
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
   
   .phone {
     font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.08em;
+    font-size: 15px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
   }
   
-  /* Decorative corner accents */
-  .corner-tl, .corner-br {
+  /* Decorative corners */
+  .corner {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    z-index: 3;
+    width: 50px;
+    height: 50px;
+    z-index: 10;
   }
-  
-  .corner-tl {
-    top: 20px;
-    left: 20px;
-    border-top: 2px solid #D4AF37;
-    border-left: 2px solid #D4AF37;
-  }
-  
-  .corner-br {
-    bottom: 20px;
-    right: 20px;
-    border-bottom: 2px solid #D4AF37;
-    border-right: 2px solid #D4AF37;
-  }
+  .corner-tl { top: 24px; left: 24px; border-top: 2px solid rgba(212,175,55,0.4); border-left: 2px solid rgba(212,175,55,0.4); }
+  .corner-tr { top: 24px; right: 24px; border-top: 2px solid rgba(212,175,55,0.4); border-right: 2px solid rgba(212,175,55,0.4); }
+  .corner-bl { bottom: 24px; left: 24px; border-bottom: 2px solid rgba(212,175,55,0.4); border-left: 2px solid rgba(212,175,55,0.4); }
+  .corner-br { bottom: 24px; right: 24px; border-bottom: 2px solid rgba(212,175,55,0.4); border-right: 2px solid rgba(212,175,55,0.4); }
 </style>
 </head>
 <body>
 <div class="card">
-  <!-- Background property photo -->
-  <img class="bg-image" src="https://images.pexels.com/photos/16787444/pexels-photo-16787444.png" alt="">
-  
-  <!-- Gold accent lines -->
-  <div class="gold-line-top"></div>
-  <div class="gold-line-bottom"></div>
-  
   <!-- Decorative corners -->
-  <div class="corner-tl"></div>
-  <div class="corner-br"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  
+  <!-- Property Photo - Top Half -->
+  <div class="photo-section">
+    <div class="badge"><p>Just Listed</p></div>
+    <img src="https://images.pexels.com/photos/16787444/pexels-photo-16787444.png" alt="5214 Jacana Lane">
+    <div class="photo-fade"></div>
+  </div>
+  
+  <!-- Gold Divider -->
+  <div class="gold-divider"></div>
   
   <!-- Content -->
   <div class="content">
-    <div class="top-label">Just Listed &bull; GT Real</div>
+    <h1 class="address">5214 Jacana<br>Lane</h1>
+    <p class="city">San Jose, California</p>
+    <p class="price">$950,000</p>
+    <p class="stats">3 Bed <span class="dot">&bull;</span> 2.5 Bath <span class="dot">&bull;</span> 1,142 Sq Ft</p>
     
-    <div class="middle">
-      <h1 class="address">5214 Jacana Lane</h1>
-      <p class="city">San Jose, California 95123</p>
-      <p class="price">$950,000</p>
-      <p class="stats">3 Bedrooms <span>&bull;</span> 2.5 Baths <span>&bull;</span> 1,142 Sq Ft</p>
-    </div>
-    
-    <div class="bottom">
-      <div class="agent-info">
-        <div class="agent-badge"><p>GTREAL.IO</p></div>
-        <div>
-          <p class="agent-name">George Toscano &bull; DRE# 02213878</p>
-        </div>
+    <div class="branding">
+      <div class="brand-badge"><p>GTREAL.IO</p></div>
+      <div class="brand-separator"></div>
+      <div>
+        <p class="agent-name">George Toscano</p>
+        <p class="phone">408-603-6603</p>
       </div>
-      <p class="phone">408-603-6603</p>
     </div>
   </div>
 </div>
