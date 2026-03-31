@@ -86,39 +86,106 @@ const PROPERTY_DATA = {
   ]
 };
 
-// Music Player Component - Matching chatbot design (square red button)
+// Music Player Component - Clean player linking to Traxsource
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showPlayer, setShowPlayer] = useState(false);
 
   const togglePlay = () => {
-    if (!isPlaying) {
-      // Open YouTube video in a new tab since embedding is disabled for this video
-      window.open('https://youtu.be/zGHkStEYC6M', '_blank');
-      setIsPlaying(true);
-      // Reset after a few seconds
-      setTimeout(() => setIsPlaying(false), 3000);
-    }
+    setShowPlayer(!showPlayer);
+    setIsPlaying(!isPlaying);
+  };
+
+  const openTraxsource = () => {
+    window.open('https://www.traxsource.com/title/2720339/i-love-u', '_blank');
   };
 
   return (
-    <button
-      data-testid="music-player-btn"
-      onClick={togglePlay}
-      className={`fixed bottom-8 left-8 w-16 h-16 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform cursor-pointer z-50 ${isPlaying ? 'bg-[#0A0A0A]' : 'bg-[#A51C30]'}`}
-      style={{ borderRadius: '0' }}
-      title="Listen to The Vibe"
-    >
-      {isPlaying ? (
-        <div className="flex items-center gap-0.5">
-          <span className="w-1 h-4 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '0ms' }}></span>
-          <span className="w-1 h-6 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '150ms' }}></span>
-          <span className="w-1 h-3 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '300ms' }}></span>
-          <span className="w-1 h-5 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '450ms' }}></span>
+    <>
+      {/* Music Player Panel - slides up smoothly when clicked */}
+      <div 
+        className={`fixed left-8 z-40 transition-all duration-500 ease-out overflow-hidden ${showPlayer ? 'bottom-28 opacity-100 translate-y-0' : 'bottom-20 opacity-0 translate-y-4 pointer-events-none'}`}
+        style={{ 
+          width: '280px',
+          background: 'linear-gradient(180deg, #0A0A0A 0%, #111 100%)',
+          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)',
+          border: '1px solid rgba(212,175,55,0.2)'
+        }}
+      >
+        {/* Album Art with Play Button */}
+        <div 
+          className="relative h-40 cursor-pointer group overflow-hidden"
+          onClick={openTraxsource}
+        >
+          {/* Album Cover */}
+          <img 
+            src="https://www.traxsource.com/files/images/777a79b8786c09936574d2bdd1373db9.jpg"
+            alt="I Love U - Stacy Kidd"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          {/* Play Overlay */}
+          <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full border-2 border-[#D4AF37] flex items-center justify-center group-hover:scale-110 transition-transform bg-black/60">
+              <Play size={24} className="text-[#D4AF37] ml-1" />
+            </div>
+          </div>
+          {/* Sound waves */}
+          <div className="absolute bottom-3 left-3 flex items-end gap-0.5">
+            <span className="w-1 h-3 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '0ms' }}></span>
+            <span className="w-1 h-5 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '150ms' }}></span>
+            <span className="w-1 h-2 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '300ms' }}></span>
+            <span className="w-1 h-4 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '450ms' }}></span>
+          </div>
+          {/* Close */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setShowPlayer(false); setIsPlaying(false); }}
+            className="absolute top-2 right-2 w-6 h-6 bg-black/60 text-white/60 hover:text-white flex items-center justify-center transition-colors"
+          >
+            <X size={14} />
+          </button>
         </div>
-      ) : (
-        <Music size={28} className="text-white" />
-      )}
-    </button>
+        
+        {/* Track Info */}
+        <div className="p-4">
+          <p className="text-white font-medium text-sm">I Love U</p>
+          <p className="text-white/50 text-xs">Stacy Kidd • House 4 Life</p>
+          <p className="text-[#D4AF37] text-[10px] mt-2 uppercase tracking-wider">Tap to listen on Traxsource</p>
+        </div>
+        
+        {/* GT Real branding */}
+        <div className="px-4 py-3 border-t border-white/10">
+          <a 
+            href="https://gtreal.io" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-[10px] text-[#D4AF37]/60 hover:text-[#D4AF37] transition-colors uppercase tracking-widest flex items-center gap-2"
+          >
+            <span className="w-1 h-1 bg-[#D4AF37] rounded-full"></span>
+            A GT Real Production
+          </a>
+        </div>
+      </div>
+
+      {/* Music Player Button - matches chatbot design */}
+      <button
+        data-testid="music-player-btn"
+        onClick={togglePlay}
+        className={`fixed bottom-8 left-8 w-16 h-16 flex items-center justify-center shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer z-50 ${isPlaying ? 'bg-[#0A0A0A] border border-[#D4AF37]/30' : 'bg-[#A51C30]'}`}
+        style={{ borderRadius: '0' }}
+        title="Play I Love U"
+      >
+        {isPlaying ? (
+          <div className="flex items-center gap-0.5">
+            <span className="w-1 h-4 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '0ms' }}></span>
+            <span className="w-1 h-6 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '150ms' }}></span>
+            <span className="w-1 h-3 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '300ms' }}></span>
+            <span className="w-1 h-5 bg-[#D4AF37] animate-sound-wave" style={{ animationDelay: '450ms' }}></span>
+          </div>
+        ) : (
+          <Music size={28} className="text-white" />
+        )}
+      </button>
+    </>
   );
 };
 
@@ -449,7 +516,10 @@ const HeroSection = () => {
         <div className="max-w-3xl">
           {/* Label */}
           <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#D4AF37] mb-4">
-            Just Listed • San Jose
+            Just Listed • San Jose •{" "}
+            <a href="https://gtreal.io" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+              GT Real
+            </a>
           </p>
 
           {/* Address */}
@@ -829,21 +899,24 @@ const Footer = () => {
             <p className="text-sm text-white/40">San Jose, CA 95123</p>
           </div>
           <div className="text-center">
-            {/* GT Real Shoutout */}
+            {/* GT Real Shoutout - More prominent */}
             <a 
               href="https://gtreal.io" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-block mb-2 group"
+              className="inline-flex flex-col items-center group"
             >
-              <p className="text-[#D4AF37] text-sm font-bold uppercase tracking-[0.15em] group-hover:text-white transition-colors">
-                Another GT Real Production
+              <p className="text-[#D4AF37] text-lg font-heading font-semibold tracking-wide group-hover:text-white transition-colors">
+                GT REAL
+              </p>
+              <p className="text-white/40 text-xs uppercase tracking-[0.2em] group-hover:text-[#D4AF37] transition-colors">
+                Get Real. Get Results.
               </p>
             </a>
           </div>
           <div className="text-center md:text-right">
             <p className="text-sm text-white/60">
-              © 2025 George Toscano. All rights reserved.
+              © 2025 George Toscano
             </p>
             <p className="text-xs text-white/40 mt-1">
               DRE# 02213878 • Kollab Real Estate
