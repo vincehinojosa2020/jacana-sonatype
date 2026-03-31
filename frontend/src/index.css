@@ -106,6 +106,20 @@ code {
     animation: pulse-gold 2s ease-in-out infinite;
 }
 
+/* Sound wave animation for music player */
+@keyframes sound-wave {
+    0%, 100% {
+        transform: scaleY(0.5);
+    }
+    50% {
+        transform: scaleY(1);
+    }
+}
+
+.animate-sound-wave {
+    animation: sound-wave 0.8s ease-in-out infinite;
+}
+
 /* Smooth scroll */
 html {
     scroll-behavior: smooth;
