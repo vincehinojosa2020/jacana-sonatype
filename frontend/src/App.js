@@ -548,8 +548,8 @@ const LanguageProvider = ({ children }) => {
 // Actual property images from uploaded assets + hero image we're keeping
 const PROPERTY_IMAGES = [
   {
-    url: "https://images.pexels.com/photos/16787444/pexels-photo-16787444.png",
-    alt: "Contemporary home exterior",
+    url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/9eaxu7ts_eaf224eb1751e8f11ed9d12eed9b2e95-cc_ft_768.webp",
+    alt: "5214 Jacana Lane exterior street view",
     category: "exterior"
   },
   {
@@ -559,11 +559,6 @@ const PROPERTY_IMAGES = [
   },
   {
     url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/ty2w647j_9b23ab2f6f901c9ab26d0ff958688091-cc_ft_768.webp",
-    alt: "Property exterior street view",
-    category: "exterior"
-  },
-  {
-    url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/9eaxu7ts_eaf224eb1751e8f11ed9d12eed9b2e95-cc_ft_768.webp",
     alt: "In-unit washer and dryer",
     category: "laundry"
   },
@@ -1257,9 +1252,9 @@ const GallerySection = () => {
           {t('everyRoom')}
         </h2>
 
-        {/* Bento Grid - now with 5 images */}
+        {/* Bento Grid - 4 actual property photos */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
-          {/* Large image - exterior */}
+          {/* Large image - actual exterior */}
           <div className="col-span-2 row-span-2 overflow-hidden group">
             <img
               src={PROPERTY_IMAGES[0].url}
@@ -1268,15 +1263,15 @@ const GallerySection = () => {
               style={{ minHeight: '400px' }}
             />
           </div>
-          {/* Living room */}
-          <div className="overflow-hidden group">
+          {/* Living room with fireplace */}
+          <div className="col-span-2 md:col-span-1 overflow-hidden group">
             <img
               src={PROPERTY_IMAGES[1].url}
               alt={PROPERTY_IMAGES[1].alt}
               className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
             />
           </div>
-          {/* Exterior street view */}
+          {/* Laundry */}
           <div className="overflow-hidden group">
             <img
               src={PROPERTY_IMAGES[2].url}
@@ -1284,19 +1279,11 @@ const GallerySection = () => {
               className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
             />
           </div>
-          {/* Laundry */}
-          <div className="overflow-hidden group">
+          {/* Living room another view */}
+          <div className="col-span-2 md:col-span-1 overflow-hidden group">
             <img
               src={PROPERTY_IMAGES[3].url}
               alt={PROPERTY_IMAGES[3].alt}
-              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
-            />
-          </div>
-          {/* Living room another view */}
-          <div className="overflow-hidden group">
-            <img
-              src={PROPERTY_IMAGES[4].url}
-              alt={PROPERTY_IMAGES[4].alt}
               className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
             />
           </div>
