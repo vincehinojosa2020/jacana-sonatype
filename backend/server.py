@@ -44,7 +44,7 @@ api_router = APIRouter(prefix="/api")
 
 # Property data for the chatbot
 PROPERTY_INFO = """
-## Property: 5214 Chiconda Lane, San Jose, CA 95123
+## Property: 5214 Jacana Lane, San Jose, CA 95123
 
 ### Basic Information
 - **Price**: $848,888 ($743 per sq ft)
@@ -104,7 +104,7 @@ PROPERTY_INFO = """
 This contemporary townhouse offers modern living with vaulted ceilings creating an open, airy feel. The updated kitchen features granite countertops and Energy Star appliances. Perfect for EV owners with a dedicated charging hookup. Located in a prime San Jose neighborhood near excellent schools, shopping, and recreation.
 
 ### Zillow Listing
-For full pricing and details, visit the Zillow Showcase listing for 5214 Chiconda Lane.
+For full pricing and details, visit the Zillow Showcase listing for 5214 Jacana Lane.
 """
 
 # Models
@@ -126,7 +126,7 @@ class ChatResponse(BaseModel):
     session_id: str
 
 class PropertyInfo(BaseModel):
-    address: str = "5214 Chiconda Lane, San Jose, CA 95123"
+    address: str = "5214 Jacana Lane, San Jose, CA 95123"
     price: str = "$848,888"
     price_per_sqft: str = "$743"
     bedrooms: int = 3

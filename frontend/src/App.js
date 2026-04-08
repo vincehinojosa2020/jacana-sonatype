@@ -44,12 +44,12 @@ const LanguageContext = createContext();
 
 // Language options with flags
 const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇺🇸', greeting: "Hey! Ask me anything about 5214 Chiconda Lane." },
-  { code: 'es', name: 'Español', flag: '🇪🇸', greeting: "¡Hola! Pregúntame lo que quieras sobre 5214 Chiconda Lane." },
-  { code: 'zh', name: '中文', flag: '🇨🇳', greeting: "你好！有关5214 Chiconda Lane的任何问题都可以问我。" },
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', greeting: "Xin chào! Hãy hỏi tôi bất cứ điều gì về 5214 Chiconda Lane." },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', greeting: "Bonjour! Posez-moi vos questions sur 5214 Chiconda Lane." },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦', greeting: "مرحباً! اسألني أي شيء عن 5214 Chiconda Lane." }
+  { code: 'en', name: 'English', flag: '🇺🇸', greeting: "Hey! Ask me anything about 5214 Jacana Lane." },
+  { code: 'es', name: 'Español', flag: '🇪🇸', greeting: "¡Hola! Pregúntame lo que quieras sobre 5214 Jacana Lane." },
+  { code: 'zh', name: '中文', flag: '🇨🇳', greeting: "你好！有关5214 Jacana Lane的任何问题都可以问我。" },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', greeting: "Xin chào! Hãy hỏi tôi bất cứ điều gì về 5214 Jacana Lane." },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', greeting: "Bonjour! Posez-moi vos questions sur 5214 Jacana Lane." },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', greeting: "مرحباً! اسألني أي شيء عن 5214 Jacana Lane." }
 ];
 
 // Translations for the entire UI
@@ -500,7 +500,7 @@ const LanguageProvider = ({ children }) => {
 const PROPERTY_IMAGES = [
   {
     url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/9eaxu7ts_eaf224eb1751e8f11ed9d12eed9b2e95-cc_ft_768.webp",
-    alt: "5214 Chiconda Lane exterior street view",
+    alt: "5214 Jacana Lane exterior street view",
     category: "exterior"
   },
   {
@@ -525,7 +525,7 @@ const AGENT_IMAGE = "https://customer-assets.emergentagent.com/job_luxury-home-s
 
 // Property data
 const PROPERTY_DATA = {
-  address: "5214 Chiconda Lane",
+  address: "5214 Jacana Lane",
   city: "San Jose, CA 95123",
   price: 848888,
   priceFormatted: "$848,888",
@@ -617,7 +617,7 @@ const ZillowLinkSection = () => {
         </p>
         <a
           data-testid="zillow-link-btn"
-          href="https://www.zillow.com/homes/5214-Chiconda-Ln-San-Jose-CA_rb/"
+          href="https://www.zillow.com/homes/5214-Jacana-Ln-San-Jose-CA_rb/"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-3 bg-[#006AFF] hover:bg-[#0055CC] text-white px-10 py-5 text-lg font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
@@ -826,7 +826,7 @@ const Chatbot = () => {
                 <Home size={20} />
                 <div>
                   <h3 className="font-heading text-lg font-semibold">{t('askAnything')}</h3>
-                  <p className="text-xs opacity-80">5214 Chiconda Lane</p>
+                  <p className="text-xs opacity-80">5214 Jacana Lane</p>
                 </div>
               </div>
               <button 
@@ -1273,7 +1273,7 @@ const MarketingSection = () => {
                 <div className="z-10">
                   <p className="text-white/80 text-sm md:text-lg uppercase tracking-widest mb-2">{t('justListed')}</p>
                   <h3 className="font-heading text-3xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                    5214<br />CHICONDA
+                    5214<br />JACANA
                   </h3>
                   <p className="text-[#D4AF37] text-2xl md:text-4xl font-heading font-bold mt-2">$848K</p>
                 </div>
@@ -1313,7 +1313,7 @@ const MarketingSection = () => {
                 <p className="text-white text-xs uppercase tracking-widest">{t('openHouse')}</p>
                 <p className="text-white font-heading text-2xl font-bold">{t('openHouseDays')}</p>
                 <p className="text-[#D4AF37] text-lg font-bold">{t('openHouseTime')}</p>
-                <p className="text-white/80 text-sm mt-1">5214 Chiconda Lane</p>
+                <p className="text-white/80 text-sm mt-1">5214 Jacana Lane</p>
               </div>
               {/* Stake */}
               <div className="w-2 h-20 bg-gray-400 mx-auto"></div>
@@ -1370,7 +1370,7 @@ const MarketingSection = () => {
             <div className="relative bg-white w-full h-80 shadow-2xl p-4 flex flex-col">
               <div className="bg-[#A51C30] h-32 flex items-center justify-center mb-3">
                 <div className="text-center">
-                  <p className="text-white font-heading text-2xl font-bold">5214 CHICONDA</p>
+                  <p className="text-white font-heading text-2xl font-bold">5214 JACANA</p>
                   <p className="text-[#D4AF37] text-xl font-bold">$848,888</p>
                 </div>
               </div>
@@ -1423,7 +1423,7 @@ const MarketingSection = () => {
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex gap-12">
                 <span className="text-6xl md:text-8xl font-heading font-bold text-white/5">GTREAL.IO</span>
-                <span className="text-6xl md:text-8xl font-heading font-bold text-[#A51C30]/10">5214 CHICONDA</span>
+                <span className="text-6xl md:text-8xl font-heading font-bold text-[#A51C30]/10">5214 JACANA</span>
                 <span className="text-6xl md:text-8xl font-heading font-bold text-[#D4AF37]/10">$848K</span>
               </div>
             ))}
@@ -1451,7 +1451,7 @@ const PlatformLinksSection = () => {
           {/* Zillow Tile */}
           <a
             data-testid="zillow-link"
-            href="https://www.zillow.com/homes/5214-Chiconda-Ln-San-Jose-CA_rb/"
+            href="https://www.zillow.com/homes/5214-Jacana-Ln-San-Jose-CA_rb/"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:border-[#A51C30]/30 hover:shadow-lg transition-all group"
@@ -1466,7 +1466,7 @@ const PlatformLinksSection = () => {
           {/* Redfin Tile */}
           <a
             data-testid="redfin-link"
-            href="https://www.redfin.com/CA/San-Jose/5214-Chiconda-Ln-95123/"
+            href="https://www.redfin.com/CA/San-Jose/5214-Jacana-Ln-95123/"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:border-[#A51C30]/30 hover:shadow-lg transition-all group"
@@ -1492,7 +1492,7 @@ const Footer = () => {
         {/* Main footer content */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div>
-            <p className="font-heading text-2xl text-white mb-1">5214 Chiconda Lane</p>
+            <p className="font-heading text-2xl text-white mb-1">5214 Jacana Lane</p>
             <p className="text-sm text-white/40">{t('sanJose')}, CA 95123</p>
           </div>
           

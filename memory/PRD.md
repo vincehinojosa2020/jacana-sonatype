@@ -1,7 +1,7 @@
-# 5214 Chiconda Lane - Real Estate Website PRD
+# 5214 Jacana Lane - Real Estate Website PRD
 
 ## Original Problem Statement
-Create a custom real estate website for 5214 Chiconda Lane, San Jose, CA for agent George Toscano (GT Real). Harvard Crimson, White, Black, and Gold colors. Smart chatbot with property knowledge, Zillow photos, placeholder for drone footage (by Leon Mansalud), and a direct message/contact button.
+Create a custom real estate website for 5214 Jacana Lane, San Jose, CA for agent George Toscano (GT Real). Harvard Crimson, White, Black, and Gold colors. Smart chatbot with property knowledge, Zillow photos, placeholder for drone footage (by Leon Mansalud), and a direct message/contact button.
 
 ## Charlotte Software Engineering Standards
 - No Emergent branding anywhere. Tab shows business name.
@@ -34,7 +34,7 @@ Create a custom real estate website for 5214 Chiconda Lane, San Jose, CA for age
 
 ## Recent Changes (April 2026)
 - Price updated: $950,000 → $848,888
-- Address updated: Jacana Lane → Chiconda Lane
+- Address updated: Jacana Lane → Jacana Lane
 - HOA updated: $255 → $260, removed utility/sewer line items
 - Removed "Every Room Every Detail" gallery section (NAR compliance)
 - Removed Mortgage Calculator, replaced with Zillow Showcase link
