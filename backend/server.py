@@ -44,10 +44,10 @@ api_router = APIRouter(prefix="/api")
 
 # Property data for the chatbot
 PROPERTY_INFO = """
-## Property: 5214 Jacana Lane, San Jose, CA 95123
+## Property: 5214 Chiconda Lane, San Jose, CA 95123
 
 ### Basic Information
-- **Price**: $950,000 ($832 per sq ft)
+- **Price**: $848,888 ($743 per sq ft)
 - **Bedrooms**: 3
 - **Bathrooms**: 2.5
 - **Square Footage**: 1,142 sq ft
@@ -59,8 +59,7 @@ PROPERTY_INFO = """
 - **Roof**: Composition
 
 ### HOA Information
-- **Monthly HOA**: $255
-- **HOA Includes**: Public utilities, sewer, water
+- **Monthly HOA**: $260
 
 ### Property Features
 - **Kitchen**: Granite countertops, modern stainless steel appliances (dishwasher, microwave, electric cooktop, oven range, refrigerator - all Energy Star rated)
@@ -83,7 +82,7 @@ PROPERTY_INFO = """
 - San Jose, California
 
 ### Listing Information
-- **Listed**: December 12, 2025
+- **Listed**: 2026
 - **MLS#**: ML82029348
 - **Listing Agents**: George Toscano and AJ Del Rosario (Kollab Real Estate)
 
@@ -98,8 +97,14 @@ PROPERTY_INFO = """
 - Email: gtdrums@gmail.com
 - Bay Area Realtor with 20+ years in tech and data analytics
 
+### Open House
+- **Schedule**: Saturday & Sunday, 1:00 PM – 4:00 PM
+
 ### Why This Home?
 This contemporary townhouse offers modern living with vaulted ceilings creating an open, airy feel. The updated kitchen features granite countertops and Energy Star appliances. Perfect for EV owners with a dedicated charging hookup. Located in a prime San Jose neighborhood near excellent schools, shopping, and recreation.
+
+### Zillow Listing
+For full pricing and details, visit the Zillow Showcase listing for 5214 Chiconda Lane.
 """
 
 # Models
@@ -121,9 +126,9 @@ class ChatResponse(BaseModel):
     session_id: str
 
 class PropertyInfo(BaseModel):
-    address: str = "5214 Jacana Lane, San Jose, CA 95123"
-    price: str = "$950,000"
-    price_per_sqft: str = "$832"
+    address: str = "5214 Chiconda Lane, San Jose, CA 95123"
+    price: str = "$848,888"
+    price_per_sqft: str = "$743"
     bedrooms: int = 3
     bathrooms: float = 2.5
     sqft: int = 1142

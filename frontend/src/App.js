@@ -4,7 +4,6 @@ import axios from "axios";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { ScrollArea } from "./components/ui/scroll-area";
-import { Slider } from "./components/ui/slider";
 import { 
   MessageCircle, 
   X, 
@@ -45,12 +44,12 @@ const LanguageContext = createContext();
 
 // Language options with flags
 const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇺🇸', greeting: "Hey! Ask me anything about 5214 Jacana Lane." },
-  { code: 'es', name: 'Español', flag: '🇪🇸', greeting: "¡Hola! Pregúntame lo que quieras sobre 5214 Jacana Lane." },
-  { code: 'zh', name: '中文', flag: '🇨🇳', greeting: "你好！有关5214 Jacana Lane的任何问题都可以问我。" },
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', greeting: "Xin chào! Hãy hỏi tôi bất cứ điều gì về 5214 Jacana Lane." },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', greeting: "Bonjour! Posez-moi vos questions sur 5214 Jacana Lane." },
-  { code: 'ar', name: 'العربية', flag: '🇸🇦', greeting: "مرحباً! اسألني أي شيء عن 5214 Jacana Lane." }
+  { code: 'en', name: 'English', flag: '🇺🇸', greeting: "Hey! Ask me anything about 5214 Chiconda Lane." },
+  { code: 'es', name: 'Español', flag: '🇪🇸', greeting: "¡Hola! Pregúntame lo que quieras sobre 5214 Chiconda Lane." },
+  { code: 'zh', name: '中文', flag: '🇨🇳', greeting: "你好！有关5214 Chiconda Lane的任何问题都可以问我。" },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', greeting: "Xin chào! Hãy hỏi tôi bất cứ điều gì về 5214 Chiconda Lane." },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', greeting: "Bonjour! Posez-moi vos questions sur 5214 Chiconda Lane." },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', greeting: "مرحباً! اسألني أي شيء عن 5214 Chiconda Lane." }
 ];
 
 // Translations for the entire UI
@@ -79,24 +78,16 @@ const TRANSLATIONS = {
     yearRoundComfort: "Comfort all year round",
     garage: "Garage",
     attachedParking: "Attached with extra parking",
-    hoaIncludes: "Utilities, sewer, water—all included. No surprises.",
-    // Gallery
-    seeForYourself: "See For Yourself",
-    everyRoom: "Every Room. Every Detail.",
-    // Mortgage
-    yourInvestment: "Your Investment",
-    whatsMyPayment: "What's My Payment?",
-    seeExactly: "See exactly what you'd pay. No surprises.",
-    downPayment: "Down Payment",
-    interestRate: "Interest Rate",
-    loanTerm: "Loan Term",
-    years: "Years",
-    yourMonthlyPayment: "Your Monthly Payment",
-    perMonth: "per month (including HOA)",
-    principalInterest: "Principal & Interest",
-    hoaDues: "HOA Dues",
-    loanAmount: "Loan Amount",
-    letsMakeItHappen: "Let's Make It Happen",
+    hoaIncludes: "HOA: $260/month",
+    // Zillow
+    viewOnZillow: "View Full Listing & Pricing on Zillow",
+    zillowShowcase: "Zillow Showcase",
+    seeFullPricing: "See pricing, open house schedule, and agent details on Zillow Showcase.",
+    // Open House
+    openHouseSchedule: "Open House Schedule",
+    openHouseDays: "Saturday & Sunday",
+    openHouseTime: "1:00 PM – 4:00 PM",
+    comeVisit: "Come see it in person. No appointment needed.",
     // Drone
     comingSoon: "Coming Soon",
     aerialView: "Aerial View",
@@ -157,22 +148,14 @@ const TRANSLATIONS = {
     yearRoundComfort: "Confort todo el año",
     garage: "Garaje",
     attachedParking: "Adjunto con estacionamiento extra",
-    hoaIncludes: "Servicios, alcantarillado, agua—todo incluido.",
-    seeForYourself: "Véalo Usted Mismo",
-    everyRoom: "Cada Habitación. Cada Detalle.",
-    yourInvestment: "Su Inversión",
-    whatsMyPayment: "¿Cuál es Mi Pago?",
-    seeExactly: "Vea exactamente lo que pagaría.",
-    downPayment: "Enganche",
-    interestRate: "Tasa de Interés",
-    loanTerm: "Plazo del Préstamo",
-    years: "Años",
-    yourMonthlyPayment: "Su Pago Mensual",
-    perMonth: "por mes (incluyendo HOA)",
-    principalInterest: "Principal e Interés",
-    hoaDues: "Cuotas HOA",
-    loanAmount: "Monto del Préstamo",
-    letsMakeItHappen: "Hagámoslo Realidad",
+    hoaIncludes: "HOA: $260/mes",
+    viewOnZillow: "Ver Listado Completo y Precios en Zillow",
+    zillowShowcase: "Zillow Showcase",
+    seeFullPricing: "Vea precios, horarios de casa abierta e info del agente en Zillow Showcase.",
+    openHouseSchedule: "Horario de Casa Abierta",
+    openHouseDays: "Sábado y Domingo",
+    openHouseTime: "1:00 PM – 4:00 PM",
+    comeVisit: "Venga a verla en persona. Sin cita previa.",
     comingSoon: "Próximamente",
     aerialView: "Vista Aérea",
     droneLaunching: "Lanzamiento pronto",
@@ -227,22 +210,14 @@ const TRANSLATIONS = {
     yearRoundComfort: "全年舒适",
     garage: "车库",
     attachedParking: "附带额外停车位",
-    hoaIncludes: "包含水电等费用，无额外支出",
-    seeForYourself: "亲眼所见",
-    everyRoom: "每个房间，每个细节",
-    yourInvestment: "您的投资",
-    whatsMyPayment: "我的月供是多少？",
-    seeExactly: "精确计算您的付款",
-    downPayment: "首付",
-    interestRate: "利率",
-    loanTerm: "贷款期限",
-    years: "年",
-    yourMonthlyPayment: "您的月付款",
-    perMonth: "每月（含HOA）",
-    principalInterest: "本金和利息",
-    hoaDues: "HOA费用",
-    loanAmount: "贷款金额",
-    letsMakeItHappen: "让我们实现它",
+    hoaIncludes: "HOA: $260/月",
+    viewOnZillow: "在Zillow上查看完整列表和价格",
+    zillowShowcase: "Zillow Showcase",
+    seeFullPricing: "在Zillow Showcase查看价格、开放日和经纪人信息。",
+    openHouseSchedule: "开放日时间",
+    openHouseDays: "周六和周日",
+    openHouseTime: "下午1:00 – 4:00",
+    comeVisit: "欢迎亲自参观，无需预约。",
     comingSoon: "即将推出",
     aerialView: "航拍视角",
     droneLaunching: "即将发布",
@@ -297,22 +272,14 @@ const TRANSLATIONS = {
     yearRoundComfort: "Thoải mái quanh năm",
     garage: "Nhà Xe",
     attachedParking: "Kèm chỗ đậu xe",
-    hoaIncludes: "Bao gồm điện nước—không phí ẩn",
-    seeForYourself: "Tự Mình Xem",
-    everyRoom: "Mọi Phòng. Mọi Chi Tiết.",
-    yourInvestment: "Khoản Đầu Tư",
-    whatsMyPayment: "Thanh Toán Hàng Tháng?",
-    seeExactly: "Xem chính xác số tiền bạn trả",
-    downPayment: "Tiền Đặt Cọc",
-    interestRate: "Lãi Suất",
-    loanTerm: "Kỳ Hạn Vay",
-    years: "Năm",
-    yourMonthlyPayment: "Thanh Toán Hàng Tháng",
-    perMonth: "mỗi tháng (gồm HOA)",
-    principalInterest: "Gốc & Lãi",
-    hoaDues: "Phí HOA",
-    loanAmount: "Số Tiền Vay",
-    letsMakeItHappen: "Hãy Thực Hiện",
+    hoaIncludes: "HOA: $260/tháng",
+    viewOnZillow: "Xem Đầy Đủ Danh Sách & Giá Trên Zillow",
+    zillowShowcase: "Zillow Showcase",
+    seeFullPricing: "Xem giá, lịch open house và thông tin đại lý trên Zillow Showcase.",
+    openHouseSchedule: "Lịch Open House",
+    openHouseDays: "Thứ Bảy & Chủ Nhật",
+    openHouseTime: "1:00 PM – 4:00 PM",
+    comeVisit: "Đến xem trực tiếp. Không cần hẹn trước.",
     comingSoon: "Sắp Ra Mắt",
     aerialView: "Góc Nhìn Trên Cao",
     droneLaunching: "Sắp phát hành",
@@ -367,22 +334,14 @@ const TRANSLATIONS = {
     yearRoundComfort: "Confort toute l'année",
     garage: "Garage",
     attachedParking: "Avec stationnement supplémentaire",
-    hoaIncludes: "Services inclus—pas de surprises",
-    seeForYourself: "Voyez Par Vous-Même",
-    everyRoom: "Chaque Pièce. Chaque Détail.",
-    yourInvestment: "Votre Investissement",
-    whatsMyPayment: "Quel Est Mon Paiement?",
-    seeExactly: "Calculez exactement ce que vous paierez",
-    downPayment: "Acompte",
-    interestRate: "Taux d'Intérêt",
-    loanTerm: "Durée du Prêt",
-    years: "Ans",
-    yourMonthlyPayment: "Votre Paiement Mensuel",
-    perMonth: "par mois (HOA inclus)",
-    principalInterest: "Principal et Intérêts",
-    hoaDues: "Frais HOA",
-    loanAmount: "Montant du Prêt",
-    letsMakeItHappen: "Faisons-le",
+    hoaIncludes: "Services inclus—HOA: $260/mois",
+    viewOnZillow: "Voir l'Annonce Complète et Prix sur Zillow",
+    zillowShowcase: "Zillow Showcase",
+    seeFullPricing: "Voir les prix, horaires portes ouvertes et détails de l'agent sur Zillow Showcase.",
+    openHouseSchedule: "Horaires Portes Ouvertes",
+    openHouseDays: "Samedi et Dimanche",
+    openHouseTime: "13h00 – 16h00",
+    comeVisit: "Venez voir en personne. Sans rendez-vous.",
     comingSoon: "Bientôt Disponible",
     aerialView: "Vue Aérienne",
     droneLaunching: "Lancement bientôt",
@@ -437,22 +396,14 @@ const TRANSLATIONS = {
     yearRoundComfort: "راحة على مدار السنة",
     garage: "مرآب",
     attachedParking: "مع موقف إضافي",
-    hoaIncludes: "يشمل المرافق—بدون مفاجآت",
-    seeForYourself: "شاهد بنفسك",
-    everyRoom: "كل غرفة. كل تفصيل.",
-    yourInvestment: "استثمارك",
-    whatsMyPayment: "كم دفعتي؟",
-    seeExactly: "احسب ما ستدفعه بالضبط",
-    downPayment: "الدفعة الأولى",
-    interestRate: "سعر الفائدة",
-    loanTerm: "مدة القرض",
-    years: "سنة",
-    yourMonthlyPayment: "دفعتك الشهرية",
-    perMonth: "شهرياً (شامل HOA)",
-    principalInterest: "الأصل والفائدة",
-    hoaDues: "رسوم HOA",
-    loanAmount: "مبلغ القرض",
-    letsMakeItHappen: "لنحقق ذلك",
+    hoaIncludes: "HOA: $260/شهرياً",
+    viewOnZillow: "شاهد القائمة الكاملة والأسعار على Zillow",
+    zillowShowcase: "Zillow Showcase",
+    seeFullPricing: "شاهد الأسعار ومواعيد البيت المفتوح ومعلومات الوكيل على Zillow Showcase.",
+    openHouseSchedule: "مواعيد البيت المفتوح",
+    openHouseDays: "السبت والأحد",
+    openHouseTime: "1:00 م – 4:00 م",
+    comeVisit: "تعال وشاهد بنفسك. بدون موعد.",
     comingSoon: "قريباً",
     aerialView: "منظر جوي",
     droneLaunching: "قريباً",
@@ -549,7 +500,7 @@ const LanguageProvider = ({ children }) => {
 const PROPERTY_IMAGES = [
   {
     url: "https://customer-assets.emergentagent.com/job_luxury-home-showcase-1/artifacts/9eaxu7ts_eaf224eb1751e8f11ed9d12eed9b2e95-cc_ft_768.webp",
-    alt: "5214 Jacana Lane exterior street view",
+    alt: "5214 Chiconda Lane exterior street view",
     category: "exterior"
   },
   {
@@ -574,16 +525,16 @@ const AGENT_IMAGE = "https://customer-assets.emergentagent.com/job_luxury-home-s
 
 // Property data
 const PROPERTY_DATA = {
-  address: "5214 Jacana Lane",
+  address: "5214 Chiconda Lane",
   city: "San Jose, CA 95123",
-  price: 950000,
-  priceFormatted: "$950,000",
-  pricePerSqft: "$832/sq ft",
+  price: 848888,
+  priceFormatted: "$848,888",
+  pricePerSqft: "$743/sq ft",
   beds: 3,
   baths: 2.5,
   sqft: "1,142",
   yearBuilt: 1988,
-  hoa: "$255/mo",
+  hoa: "$260/mo",
   features: [
     { icon: Flame, label: "Stone Fireplace", desc: "Cozy gatherings start here" },
     { icon: Zap, label: "EV Ready", desc: "Charge while you sleep" },
@@ -649,150 +600,73 @@ const MusicPlayer = () => {
   );
 };
 
-// Mortgage Calculator Component
-const MortgageCalculator = () => {
+// Zillow Showcase Link Section
+const ZillowLinkSection = () => {
   const { t } = useTranslation();
-  const [homePrice] = useState(PROPERTY_DATA.price);
-  const [downPayment, setDownPayment] = useState(190000); // 20%
-  const [interestRate, setInterestRate] = useState(6.5);
-  const [loanTerm, setLoanTerm] = useState(30);
-
-  const calculateMonthlyPayment = () => {
-    const principal = homePrice - downPayment;
-    const monthlyRate = interestRate / 100 / 12;
-    const numPayments = loanTerm * 12;
-    
-    if (monthlyRate === 0) return principal / numPayments;
-    
-    const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
-                    (Math.pow(1 + monthlyRate, numPayments) - 1);
-    
-    return payment;
-  };
-
-  const monthlyPayment = calculateMonthlyPayment();
-  const monthlyHOA = 255;
-  const totalMonthly = monthlyPayment + monthlyHOA;
-  const downPaymentPercent = ((downPayment / homePrice) * 100).toFixed(0);
-
   return (
-    <section data-testid="mortgage-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
-      <div className="max-w-4xl mx-auto">
+    <section data-testid="zillow-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
+      <div className="max-w-3xl mx-auto text-center">
         <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 section-label gold-underline">
-          {t('yourInvestment')}
+          {t('zillowShowcase')}
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-4">
-          {t('whatsMyPayment')}
+          {PROPERTY_DATA.priceFormatted}
         </h2>
-        <p className="text-gray-600 mb-12 font-body">
-          {t('seeExactly')}
+        <p className="text-gray-600 mb-10 font-body text-lg">
+          {t('seeFullPricing')}
         </p>
+        <a
+          data-testid="zillow-link-btn"
+          href="https://www.zillow.com/homes/5214-Chiconda-Ln-San-Jose-CA_rb/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-3 bg-[#006AFF] hover:bg-[#0055CC] text-white px-10 py-5 text-lg font-bold uppercase tracking-wider transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+        >
+          <ExternalLink size={22} />
+          {t('viewOnZillow')}
+        </a>
+      </div>
+    </section>
+  );
+};
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Calculator Inputs */}
-          <div className="space-y-8">
-            {/* Down Payment */}
-            <div>
-              <div className="flex justify-between mb-3">
-                <label className="text-sm font-medium text-gray-700">{t('downPayment')}</label>
-                <span className="text-sm font-bold text-[#A51C30]">
-                  ${downPayment.toLocaleString()} ({downPaymentPercent}%)
-                </span>
-              </div>
-              <Slider
-                data-testid="down-payment-slider"
-                value={[downPayment]}
-                onValueChange={(value) => setDownPayment(value[0])}
-                min={47500}
-                max={475000}
-                step={5000}
-                className="[&_[role=slider]]:bg-[#A51C30] [&_[role=slider]]:border-[#A51C30]"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
-                <span>5%</span>
-                <span>50%</span>
-              </div>
-            </div>
-
-            {/* Interest Rate */}
-            <div>
-              <div className="flex justify-between mb-3">
-                <label className="text-sm font-medium text-gray-700">{t('interestRate')}</label>
-                <span className="text-sm font-bold text-[#A51C30]">{interestRate}%</span>
-              </div>
-              <Slider
-                data-testid="interest-rate-slider"
-                value={[interestRate]}
-                onValueChange={(value) => setInterestRate(value[0])}
-                min={4}
-                max={9}
-                step={0.125}
-                className="[&_[role=slider]]:bg-[#A51C30] [&_[role=slider]]:border-[#A51C30]"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
-                <span>4%</span>
-                <span>9%</span>
-              </div>
-            </div>
-
-            {/* Loan Term */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-3 block">{t('loanTerm')}</label>
-              <div className="flex gap-4">
-                {[15, 20, 30].map((term) => (
-                  <button
-                    key={term}
-                    data-testid={`loan-term-${term}`}
-                    onClick={() => setLoanTerm(term)}
-                    className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-all ${
-                      loanTerm === term 
-                        ? 'bg-[#A51C30] text-white' 
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {term} {t('years')}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Results */}
-          <div className="bg-[#0A0A0A] p-8 text-white">
-            <div className="flex items-center gap-2 mb-6">
-              <Calculator className="text-[#D4AF37]" size={24} />
-              <span className="text-sm uppercase tracking-wider text-white/60">{t('yourMonthlyPayment')}</span>
-            </div>
-            
-            <p className="text-5xl font-heading font-semibold text-white mb-2">
-              ${Math.round(totalMonthly).toLocaleString()}
-            </p>
-            <p className="text-sm text-white/60 mb-8">{t('perMonth')}</p>
-
-            <div className="space-y-4 pt-6 border-t border-white/10">
-              <div className="flex justify-between">
-                <span className="text-white/60">{t('principalInterest')}</span>
-                <span className="font-medium">${Math.round(monthlyPayment).toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/60">{t('hoaDues')}</span>
-                <span className="font-medium">${monthlyHOA}</span>
-              </div>
-              <div className="flex justify-between pt-4 border-t border-white/10">
-                <span className="text-white/60">{t('loanAmount')}</span>
-                <span className="font-medium">${(homePrice - downPayment).toLocaleString()}</span>
-              </div>
-            </div>
-
-            <a
-              data-testid="mortgage-cta"
-              href="tel:4086036603"
-              className="mt-8 w-full bg-[#A51C30] hover:bg-[#8A1527] text-white py-4 flex items-center justify-center gap-2 font-bold uppercase text-sm transition-colors"
-            >
-              <Phone size={18} />
-              {t('letsMakeItHappen')}
-            </a>
-          </div>
+// Open House Section
+const OpenHouseSection = () => {
+  const { t } = useTranslation();
+  return (
+    <section data-testid="openhouse-section" className="bg-[#0A0A0A] py-20 md:py-24 px-6 md:px-12 lg:px-24">
+      <div className="max-w-4xl mx-auto text-center">
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#D4AF37] mb-4">
+          {t('openHouseSchedule')}
+        </p>
+        <h2 className="font-heading text-4xl md:text-5xl font-medium text-white tracking-tight mb-6">
+          {t('openHouseDays')}
+        </h2>
+        <p className="text-3xl md:text-4xl font-heading font-semibold text-[#D4AF37] mb-6">
+          {t('openHouseTime')}
+        </p>
+        <p className="text-white/50 text-lg mb-10 font-body">
+          {t('comeVisit')}
+        </p>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <a
+            data-testid="openhouse-call-btn"
+            href="tel:4086036603"
+            className="bg-[#A51C30] text-white hover:bg-[#8A1527] transition-colors duration-300 px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
+          >
+            <Phone size={20} />
+            {t('iPickUp')}
+          </a>
+          <a
+            data-testid="openhouse-linkedin-btn"
+            href="https://www.linkedin.com/in/george-toscano-6b979821/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-colors duration-300 px-8 py-4 flex items-center gap-3 font-bold uppercase text-sm"
+          >
+            <Linkedin size={20} />
+            {t('messageGeorge')}
+          </a>
         </div>
       </div>
     </section>
@@ -952,7 +826,7 @@ const Chatbot = () => {
                 <Home size={20} />
                 <div>
                   <h3 className="font-heading text-lg font-semibold">{t('askAnything')}</h3>
-                  <p className="text-xs opacity-80">5214 Jacana Lane</p>
+                  <p className="text-xs opacity-80">5214 Chiconda Lane</p>
                 </div>
               </div>
               <button 
@@ -1238,60 +1112,6 @@ const DetailsSection = () => {
   );
 };
 
-// Photo Gallery Section - with all actual property photos
-const GallerySection = () => {
-  const { t } = useTranslation();
-  return (
-    <section data-testid="gallery-section" className="bg-white py-24 md:py-32 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Label */}
-        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#A51C30] mb-4 section-label gold-underline">
-          {t('seeForYourself')}
-        </p>
-        <h2 className="font-heading text-3xl md:text-4xl font-medium text-[#0A0A0A] tracking-tight mb-12">
-          {t('everyRoom')}
-        </h2>
-
-        {/* Bento Grid - 4 actual property photos */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
-          {/* Large image - actual exterior */}
-          <div className="col-span-2 row-span-2 overflow-hidden group">
-            <img
-              src={PROPERTY_IMAGES[0].url}
-              alt={PROPERTY_IMAGES[0].alt}
-              className="w-full h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
-              style={{ minHeight: '400px' }}
-            />
-          </div>
-          {/* Living room with fireplace */}
-          <div className="col-span-2 md:col-span-1 overflow-hidden group">
-            <img
-              src={PROPERTY_IMAGES[1].url}
-              alt={PROPERTY_IMAGES[1].alt}
-              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
-            />
-          </div>
-          {/* Laundry */}
-          <div className="overflow-hidden group">
-            <img
-              src={PROPERTY_IMAGES[2].url}
-              alt={PROPERTY_IMAGES[2].alt}
-              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
-            />
-          </div>
-          {/* Living room another view */}
-          <div className="col-span-2 md:col-span-1 overflow-hidden group">
-            <img
-              src={PROPERTY_IMAGES[3].url}
-              alt={PROPERTY_IMAGES[3].alt}
-              className="w-full h-48 md:h-full object-cover img-grayscale group-hover:scale-105 transition-all duration-500"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // Drone Footage Section
 const DroneSection = () => {
@@ -1453,9 +1273,9 @@ const MarketingSection = () => {
                 <div className="z-10">
                   <p className="text-white/80 text-sm md:text-lg uppercase tracking-widest mb-2">{t('justListed')}</p>
                   <h3 className="font-heading text-3xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-                    5214<br />JACANA
+                    5214<br />CHICONDA
                   </h3>
-                  <p className="text-[#D4AF37] text-2xl md:text-4xl font-heading font-bold mt-2">$950K</p>
+                  <p className="text-[#D4AF37] text-2xl md:text-4xl font-heading font-bold mt-2">$848K</p>
                 </div>
                 
                 {/* Right side - Info */}
@@ -1491,9 +1311,9 @@ const MarketingSection = () => {
               {/* Sign */}
               <div className="bg-[#A51C30] w-64 h-40 flex flex-col items-center justify-center shadow-xl border-4 border-white">
                 <p className="text-white text-xs uppercase tracking-widest">{t('openHouse')}</p>
-                <p className="text-white font-heading text-3xl font-bold">{t('today')}</p>
-                <p className="text-[#D4AF37] text-lg font-bold">1PM - 4PM</p>
-                <p className="text-white/80 text-sm mt-1">5214 Jacana Lane</p>
+                <p className="text-white font-heading text-2xl font-bold">{t('openHouseDays')}</p>
+                <p className="text-[#D4AF37] text-lg font-bold">{t('openHouseTime')}</p>
+                <p className="text-white/80 text-sm mt-1">5214 Chiconda Lane</p>
               </div>
               {/* Stake */}
               <div className="w-2 h-20 bg-gray-400 mx-auto"></div>
@@ -1507,7 +1327,7 @@ const MarketingSection = () => {
               {/* Sign */}
               <div className="bg-[#0A0A0A] w-64 h-40 flex flex-col items-center justify-center shadow-xl border-4 border-[#D4AF37]">
                 <p className="text-[#D4AF37] text-xs uppercase tracking-widest">{t('forSale')}</p>
-                <p className="text-white font-heading text-2xl font-bold">$950,000</p>
+                <p className="text-white font-heading text-2xl font-bold">$848,888</p>
                 <p className="text-white/60 text-sm">3 Bed • 2.5 Bath</p>
                 <div className="mt-2 bg-[#A51C30] px-3 py-1">
                   <p className="text-white text-xs font-bold">GTREAL.IO</p>
@@ -1550,8 +1370,8 @@ const MarketingSection = () => {
             <div className="relative bg-white w-full h-80 shadow-2xl p-4 flex flex-col">
               <div className="bg-[#A51C30] h-32 flex items-center justify-center mb-3">
                 <div className="text-center">
-                  <p className="text-white font-heading text-2xl font-bold">5214 JACANA</p>
-                  <p className="text-[#D4AF37] text-xl font-bold">$950,000</p>
+                  <p className="text-white font-heading text-2xl font-bold">5214 CHICONDA</p>
+                  <p className="text-[#D4AF37] text-xl font-bold">$848,888</p>
                 </div>
               </div>
               <div className="flex-1 text-[#0A0A0A]">
@@ -1603,8 +1423,8 @@ const MarketingSection = () => {
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex gap-12">
                 <span className="text-6xl md:text-8xl font-heading font-bold text-white/5">GTREAL.IO</span>
-                <span className="text-6xl md:text-8xl font-heading font-bold text-[#A51C30]/10">5214 JACANA</span>
-                <span className="text-6xl md:text-8xl font-heading font-bold text-[#D4AF37]/10">$950K</span>
+                <span className="text-6xl md:text-8xl font-heading font-bold text-[#A51C30]/10">5214 CHICONDA</span>
+                <span className="text-6xl md:text-8xl font-heading font-bold text-[#D4AF37]/10">$848K</span>
               </div>
             ))}
           </div>
@@ -1631,7 +1451,7 @@ const PlatformLinksSection = () => {
           {/* Zillow Tile */}
           <a
             data-testid="zillow-link"
-            href="https://www.zillow.com/homedetails/5214-Jacana-Ln-San-Jose-CA-95123/19826723_zpid/"
+            href="https://www.zillow.com/homes/5214-Chiconda-Ln-San-Jose-CA_rb/"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:border-[#A51C30]/30 hover:shadow-lg transition-all group"
@@ -1646,7 +1466,7 @@ const PlatformLinksSection = () => {
           {/* Redfin Tile */}
           <a
             data-testid="redfin-link"
-            href="https://www.redfin.com/CA/San-Jose/5214-Jacana-Ln-95123/home/1584856"
+            href="https://www.redfin.com/CA/San-Jose/5214-Chiconda-Ln-95123/"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-white border border-gray-200 p-6 flex flex-col items-center justify-center gap-3 hover:border-[#A51C30]/30 hover:shadow-lg transition-all group"
@@ -1672,7 +1492,7 @@ const Footer = () => {
         {/* Main footer content */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
           <div>
-            <p className="font-heading text-2xl text-white mb-1">5214 Jacana Lane</p>
+            <p className="font-heading text-2xl text-white mb-1">5214 Chiconda Lane</p>
             <p className="text-sm text-white/40">{t('sanJose')}, CA 95123</p>
           </div>
           
@@ -1697,7 +1517,7 @@ const Footer = () => {
           
           <div className="text-center md:text-right">
             <p className="text-sm text-white/60">
-              © 2025 George Toscano
+              © 2026 George Toscano
             </p>
             <p className="text-xs text-white/40 mt-1">
               DRE# 02213878 • Kollab Real Estate
@@ -1729,8 +1549,8 @@ function App() {
       <div className="App min-h-screen bg-[#FAFAFA]">
         <HeroSection />
         <DetailsSection />
-        <GallerySection />
-        <MortgageCalculator />
+        <ZillowLinkSection />
+        <OpenHouseSection />
         <DroneSection />
         <AgentSection />
         <MarketingSection />

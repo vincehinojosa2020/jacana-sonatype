@@ -1,7 +1,7 @@
-# 5214 Jacana Lane - Real Estate Website PRD
+# 5214 Chiconda Lane - Real Estate Website PRD
 
 ## Original Problem Statement
-Create a custom real estate website for 5214 Jacana Lane, San Jose, CA for agent George Toscano (GT Real). Harvard Crimson, White, Black, and Gold colors. Smart chatbot with property knowledge, Zillow photos, placeholder for drone footage (by Leon Mansalud), and a direct message/contact button.
+Create a custom real estate website for 5214 Chiconda Lane, San Jose, CA for agent George Toscano (GT Real). Harvard Crimson, White, Black, and Gold colors. Smart chatbot with property knowledge, Zillow photos, placeholder for drone footage (by Leon Mansalud), and a direct message/contact button.
 
 ## Charlotte Software Engineering Standards
 - No Emergent branding anywhere. Tab shows business name.
@@ -13,27 +13,33 @@ Create a custom real estate website for 5214 Jacana Lane, San Jose, CA for agent
 ## Tech Stack
 - Frontend: React, Tailwind CSS, Shadcn UI
 - Backend: FastAPI, Motor (async MongoDB)
-- AI: OpenAI GPT-5.2 via Emergent LLM Key
+- AI: OpenAI via Emergent LLM Key
+- Object Storage: Emergent Object Storage (OG image)
 - Architecture: Single-page app with monolithic App.js
 
-## Completed Features (All Tested & Working)
-1. Hero section with property details and CTAs
-2. Property Details section (beds, baths, sqft, features)
-3. Photo Gallery (Zillow images, bento grid)
-4. Interactive Mortgage Calculator
+## Completed Features
+1. Hero section with actual property exterior photo and CTAs
+2. Property Details section (beds, baths, sqft, features) - HOA $260/mo
+3. Zillow Showcase link section (blue button → Zillow listing)
+4. Open House section (Saturday & Sunday, 1:00 PM – 4:00 PM)
 5. Drone Footage placeholder (Coming Soon)
 6. Agent Profile section (George Toscano headshot)
 7. Gary Vee-style Marketing Materials (billboards, yard signs, flyers)
 8. Zillow/Redfin links
-9. Inline MP3 Music Player ("I Love U" by Stacy Kidd)
+9. Inline MP3 Music Player
 10. Multilingual AI Chatbot with voice input (6 languages)
-11. Custom OG tags for iMessage/social previews
-12. "design by Charlotte." footer credit
-13. **Global Multilingual UI** - Flag bar at top with 6 languages (EN, ES, ZH, VI, FR, AR with Saudi Arabia flag). All page content translates instantly. Arabic supports RTL layout. Chatbot syncs with global language selection.
+11. Global Multilingual UI (EN, ES, ZH, VI, FR, AR with flag bar)
+12. Custom 1200x1200 OG image tile for iMessage (stored in object storage)
+13. "design by Charlotte." footer credit
 
-## Deployment Status
-- Deployment check: PASSED
-- All features tested and verified
+## Recent Changes (April 2026)
+- Price updated: $950,000 → $848,888
+- Address updated: Jacana Lane → Chiconda Lane
+- HOA updated: $255 → $260, removed utility/sewer line items
+- Removed "Every Room Every Detail" gallery section (NAR compliance)
+- Removed Mortgage Calculator, replaced with Zillow Showcase link
+- Open House: Saturday & Sunday, 1:00 PM – 4:00 PM
+- Year updated: 2025 → 2026
 
 ## Backlog
 - P1: Add actual drone footage when Leon Mansalud delivers it
