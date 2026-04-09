@@ -1113,30 +1113,36 @@ const DetailsSection = () => {
 };
 
 
-// Drone Footage Section
+// Drone Footage Section - FPV Tour Video
 const DroneSection = () => {
   const { t } = useTranslation();
+  const DRONE_VIDEO_URL = "https://customer-assets.emergentagent.com/job_87942394-b713-47b2-9d78-616215c10bb0/artifacts/lgrs2kjt_1080x1920-FPV%20Tour-5214%20Jacana%20Ln.mp4";
+
   return (
     <section data-testid="drone-section" className="bg-[#0A0A0A] py-24 md:py-32 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto text-center">
         {/* Section Label */}
-        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#D4AF37] mb-4">
-          {t('comingSoon')}
+        <p className="text-xs tracking-[0.2em] uppercase font-bold text-[#D4AF37] mb-4 section-label gold-underline">
+          FPV Tour
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-medium text-white tracking-tight mb-12">
           {t('aerialView')}
         </h2>
 
-        {/* Video Placeholder */}
-        <div className="relative aspect-video max-w-4xl mx-auto bg-[#111111] border border-white/10 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-20 h-20 mx-auto mb-6 border-2 border-[#D4AF37] flex items-center justify-center animate-pulse-gold">
-              <Play className="text-[#D4AF37]" size={32} />
-            </div>
-            <p className="pulse-text text-[#D4AF37] font-heading text-2xl md:text-3xl font-medium tracking-wider uppercase">
-              Drone Footage
-            </p>
-            <p className="text-white/40 text-sm mt-2">{t('droneLaunching')}</p>
+        {/* Actual FPV Drone Video */}
+        <div className="relative max-w-md mx-auto">
+          <div className="relative bg-[#111111] border border-[#D4AF37]/20 shadow-2xl overflow-hidden" style={{ aspectRatio: '9/16' }}>
+            <video
+              data-testid="drone-video"
+              className="w-full h-full object-cover"
+              controls
+              playsInline
+              preload="metadata"
+              poster=""
+            >
+              <source src={DRONE_VIDEO_URL} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
 
